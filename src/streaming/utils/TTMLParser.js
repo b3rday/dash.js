@@ -62,7 +62,7 @@ function TTMLParser() {
 
         var errorMsg = '';
         var captionArray = [];
-        
+
         var imsc1doc = imsc1Parser.fromXML(data, function (msg) {
             errorMsg = msg;
         });
