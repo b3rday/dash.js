@@ -32,6 +32,7 @@ import EventBus from '../core/EventBus';
 import Events from '../core/events/Events';
 import FactoryMaker from '../core/FactoryMaker';
 import Debug from '../core/Debug';
+import { renderHTML } from 'imsc';
 
 function TextTracks() {
 
@@ -55,7 +56,6 @@ function TextTracks() {
         isChrome,
         fullscreenAttribute,
         displayCCOnTop,
-        imsc1Parser,
         topZIndex;
 
     function initialize () {
@@ -71,8 +71,6 @@ function TextTracks() {
         videoSizeCheckInterval = null;
         displayCCOnTop = false;
         topZIndex = 2147483647;
-
-        imsc1Parser = require('imsc');
 
         //TODO Check if IE has resolved issues: Then revert to not using the addTextTrack API for all browsers.
         // https://connect.microsoft.com/IE/feedbackdetail/view/1660701/text-tracks-do-not-fire-change-addtrack-or-removetrack-events
@@ -441,7 +439,7 @@ function TextTracks() {
                     if (track.mode === 'showing') {
                         var finalCue = document.createElement('div');
                         log('Cue enter id:' + this.cueID);
-                        imsc1Parser.renderHTML(this.isd, finalCue, null, captionContainer.clientWidth, captionContainer.clientHeight);
+                        renderHTML(this.isd, finalCue, null, captionContainer.clientWidth, captionContainer.clientHeight);
                         finalCue.id = this.cueID;
                         captionContainer.appendChild(finalCue);
                         //scaleCue.call(self, this);
