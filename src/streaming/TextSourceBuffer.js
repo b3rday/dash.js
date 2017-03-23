@@ -93,8 +93,7 @@ function TextSourceBuffer() {
         textTracks.initialize();
         isFragmented = !dashManifestModel.getIsTextTrack(type);
         boxParser = BoxParser(context).getInstance();
-        fragmentedTextBoxParser = FragmentedTextBoxParser(context).getInstance();
-        fragmentedTextBoxParser.setConfig({boxParser: boxParser});
+        fragmentedTextBoxParser = FragmentedTextBoxParser(context).getInstance({boxParser: boxParser});
 
         if (isFragmented) {
             fragmentModel = streamProcessor.getFragmentModel();
@@ -117,8 +116,7 @@ function TextSourceBuffer() {
         textTracks = TextTracks(context).getInstance();
         textTracks.initialize();
         boxParser = BoxParser(context).getInstance();
-        fragmentedTextBoxParser = FragmentedTextBoxParser(context).getInstance();
-        fragmentedTextBoxParser.setConfig({boxParser: boxParser});
+        fragmentedTextBoxParser = FragmentedTextBoxParser(context).getInstance({boxParser: boxParser});
         isFragmented = false;
         currFragmentedTrackIdx = null;
         embeddedInitializationSegmentReceived = false;

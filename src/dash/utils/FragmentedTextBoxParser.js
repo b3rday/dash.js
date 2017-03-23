@@ -31,18 +31,10 @@
 
 import FactoryMaker from '../../core/FactoryMaker';
 
-function FragmentedTextBoxParser() {
+function FragmentedTextBoxParser(config) {
 
-    let instance,
-        boxParser;
-
-    function setConfig(config) {
-        if (!config) return;
-
-        if (config.boxParser) {
-            boxParser = config.boxParser;
-        }
-    }
+    let instance;
+    let boxParser = config.boxParser;
 
     function getSamplesInfo(ab) {
         var isoFile = boxParser.parse(ab);
@@ -116,8 +108,7 @@ function FragmentedTextBoxParser() {
 
     instance = {
         getSamplesInfo: getSamplesInfo,
-        getMediaTimescaleFromMoov: getMediaTimescaleFromMoov,
-        setConfig: setConfig
+        getMediaTimescaleFromMoov: getMediaTimescaleFromMoov
     };
 
     return instance;
