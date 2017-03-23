@@ -31,6 +31,7 @@
 import FactoryMaker from '../../core/FactoryMaker';
 import X2JS from '../../../externals/xml2json';
 import Debug from '../../core/Debug';
+import VideoModel from '../models/VideoModel';
 
 const SECONDS_IN_HOUR = 60 * 60; // Expression of an hour in seconds
 const SECONDS_IN_MIN = 60; // Expression of a minute in seconds
@@ -64,14 +65,6 @@ function TTMLParser() {
         converter;
 
     let cueCounter = 0; // Used to give every cue a unique ID.
-
-    function setConfig(config) {
-        if (!config) return;
-
-        if (config.videoModel) {
-            videoModel = config.videoModel;
-        }
-    }
 
     /**
      * Get the begin-end interval if present, or null otherwise.
@@ -655,6 +648,7 @@ function TTMLParser() {
             enableToStringFunc: false,
             matchers:           []
         });
+        videoModel = VideoModel(context).getInstance();
     }
 
     function parseTimings(timingStr) {
@@ -1468,8 +1462,7 @@ function TTMLParser() {
     }
 
     instance = {
-        parse: parse,
-        setConfig: setConfig
+        parse: parse
     };
 
     setup();
