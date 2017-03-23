@@ -32,6 +32,7 @@ import EventBus from '../core/EventBus';
 import Events from '../core/events/Events';
 import FactoryMaker from '../core/FactoryMaker';
 import Debug from '../core/Debug';
+import VideoModel from './models/VideoModel';
 
 function TextTracks() {
 
@@ -87,7 +88,7 @@ function TextTracks() {
         } else if (document.mozFullScreen) { // Firefox
             fullscreenAttribute = 'mozFullScreen';
         }
-
+        videoModel = VideoModel(context).getInstance();
     }
 
     function createTrackForUserAgent (i) {
@@ -594,14 +595,6 @@ function TextTracks() {
         }
     }
 
-    function setConfig(config) {
-        if (!config) return;
-
-        if (config.videoModel) {
-            videoModel = config.videoModel;
-        }
-    }
-
     instance = {
         initialize: initialize,
         displayCConTop: displayCConTop,
@@ -614,8 +607,7 @@ function TextTracks() {
         getTrackIdxForId: getTrackIdxForId,
         deleteTrackCues: deleteTrackCues,
         deleteAllTextTracks: deleteAllTextTracks,
-        deleteTextTrack: deleteTextTrack,
-        setConfig: setConfig
+        deleteTextTrack: deleteTextTrack
     };
 
     return instance;

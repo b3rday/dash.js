@@ -90,7 +90,6 @@ function TextSourceBuffer() {
         let streamProcessor = bufferController.getStreamProcessor();
 
         mediaInfos = streamProcessor.getMediaInfoArr();
-        textTracks.setConfig({videoModel: videoModel});
         textTracks.initialize();
         isFragmented = !dashManifestModel.getIsTextTrack(type);
         boxParser = BoxParser(context).getInstance();
@@ -116,7 +115,6 @@ function TextSourceBuffer() {
         mediaInfos = [];
         videoModel = VideoModel(context).getInstance();
         textTracks = TextTracks(context).getInstance();
-        textTracks.setConfig({videoModel: videoModel});
         textTracks.initialize();
         boxParser = BoxParser(context).getInstance();
         fragmentedTextBoxParser = FragmentedTextBoxParser(context).getInstance();

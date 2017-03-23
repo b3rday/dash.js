@@ -1712,7 +1712,6 @@ function MediaPlayer() {
      */
     function displayCaptionsOnTop(value) {
         let textTracks = TextTracks(context).getInstance();
-        textTracks.setConfig({videoModel: videoModel});
         textTracks.initialize();
         textTracks.displayCConTop(value);
     }
