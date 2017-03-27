@@ -263,7 +263,7 @@ function RepresentationController() {
     }
 
     function onRepresentationUpdated(e) {
-        if (e.sender.getStreamProcessor() !== streamProcessor || !isUpdating()) return;
+        if (e.mediaType !== streamProcessor.getType() || !isUpdating()) return;
 
         var r = e.representation;
         var streamMetrics = metricsModel.getMetricsFor('stream');

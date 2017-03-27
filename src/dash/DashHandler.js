@@ -100,10 +100,6 @@ function DashHandler(config) {
         segmentsGetter = SegmentsGetter(context).create(config, isDynamic);
     }
 
-    function getStreamProcessor() {
-        return streamProcessor;
-    }
-
     function setCurrentTime(value) {
         currentTime = value;
     }
@@ -263,7 +259,7 @@ function DashHandler(config) {
 
         if ((representation.segmentAvailabilityRange.end < representation.segmentAvailabilityRange.start) && !representation.useCalculatedLiveEdgeTime) {
             error = new Error(SEGMENTS_UNAVAILABLE_ERROR_CODE, 'no segments are available yet', {availabilityDelay: representation.segmentAvailabilityRange.start - representation.segmentAvailabilityRange.end});
-            eventBus.trigger(Events.REPRESENTATION_UPDATED, {sender: this, representation: representation, error: error});
+            eventBus.trigger(Events.REPRESENTATION_UPDATED, {mediaType: type, representation: representation, error: error});
             return;
         }
 
@@ -282,7 +278,7 @@ function DashHandler(config) {
         }
 
         if (hasInitialization && hasSegments) {
-            eventBus.trigger(Events.REPRESENTATION_UPDATED, {sender: this, representation: representation});
+            eventBus.trigger(Events.REPRESENTATION_UPDATED, {mediaType: type, representation: representation});
         }
     }
 
@@ -456,7 +452,7 @@ function DashHandler(config) {
         //log("Got an initialization.");
         if (!representation.segments) return;
 
-        eventBus.trigger(Events.REPRESENTATION_UPDATED, {sender: this, representation: representation});
+        eventBus.trigger(Events.REPRESENTATION_UPDATED, {mediaType: type, representation: representation});
     }
 
     function onSegmentsLoaded(e) {
@@ -498,12 +494,11 @@ function DashHandler(config) {
 
         if (!Representation.hasInitialization(representation)) return;
 
-        eventBus.trigger(Events.REPRESENTATION_UPDATED, {sender: this, representation: representation});
+        eventBus.trigger(Events.REPRESENTATION_UPDATED, {mediaType: type, representation: representation});
     }
 
     instance = {
         initialize: initialize,
-        getStreamProcessor: getStreamProcessor,
         getInitRequest: getInitRequest,
         getSegmentRequestForTime: getSegmentRequestForTime,
         getNextSegmentRequest: getNextSegmentRequest,
