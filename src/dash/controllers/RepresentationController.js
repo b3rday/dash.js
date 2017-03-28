@@ -329,7 +329,7 @@ function RepresentationController() {
     }
 
     function onBufferLevelUpdated(e) {
-        if (e.sender.getStreamProcessor() !== streamProcessor) return;
+        if (e.mediaType !== streamProcessor.getType()) return;
         addDVRMetric();
     }
 

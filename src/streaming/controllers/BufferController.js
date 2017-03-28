@@ -265,7 +265,7 @@ function BufferController(config) {
     function updateBufferLevel() {
         if (playbackController) {
             bufferLevel = sourceBufferController.getBufferLength(buffer, playbackController.getTime());
-            eventBus.trigger(Events.BUFFER_LEVEL_UPDATED, {sender: instance, bufferLevel: bufferLevel});
+            eventBus.trigger(Events.BUFFER_LEVEL_UPDATED, {mediaType: type, bufferLevel: bufferLevel});
             checkIfSufficientBuffer();
         }
     }
