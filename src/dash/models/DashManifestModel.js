@@ -344,8 +344,9 @@ function DashManifestModel() {
         var reps = a.Representation_asArray;
         var ln = reps.length;
         var bitrateList = [];
+        var i = 0;
 
-        for (var i = 0; i < ln; i++) {
+        for (i = 0; i < ln; i++) {
             bitrateList.push({
                 bandwidth: reps[i].bandwidth,
                 width: reps[i].width || 0,
@@ -367,9 +368,10 @@ function DashManifestModel() {
             initialization,
             segmentInfo,
             r,
+            i,
             s;
 
-        for (var i = 0; i < a.Representation_asArray.length; i++) {
+        for (i = 0; i < a.Representation_asArray.length; i++) {
             r = a.Representation_asArray[i];
             representation = new Representation();
             representation.index = i;
@@ -487,9 +489,10 @@ function DashManifestModel() {
         var p = manifest.Period_asArray[period.index];
         var adaptations = [];
         var adaptationSet,
-            a;
+            a,
+            i;
 
-        for (var i = 0; i < p.AdaptationSet_asArray.length; i++) {
+        for (i = 0; i < p.AdaptationSet_asArray.length; i++) {
             a = p.AdaptationSet_asArray[i];
             adaptationSet = new AdaptationSet();
 
@@ -674,9 +677,11 @@ function DashManifestModel() {
         var periodArray = manifest.Period_asArray;
         var eventStreams = periodArray[period.index].EventStream_asArray;
         var events = [];
+        var i,
+            j;
 
         if (eventStreams) {
-            for (var i = 0; i < eventStreams.length; i++) {
+            for (i = 0; i < eventStreams.length; i++) {
                 var eventStream = new EventStream();
                 eventStream.period = period;
                 eventStream.timescale = 1;
@@ -692,7 +697,7 @@ function DashManifestModel() {
                 if (eventStreams[i].hasOwnProperty('value')) {
                     eventStream.value = eventStreams[i].value;
                 }
-                for (var j = 0; j < eventStreams[i].Event_asArray.length; j++) {
+                for (j = 0; j < eventStreams[i].Event_asArray.length; j++) {
                     var event = new Event();
                     event.presentationTime = 0;
                     event.eventStream = eventStream;
@@ -716,10 +721,11 @@ function DashManifestModel() {
 
     function getEventStreams(inbandStreams, representation) {
         var eventStreams = [];
+        var i;
 
         if (!inbandStreams) return eventStreams;
 
-        for (var i = 0; i < inbandStreams.length ; i++ ) {
+        for (i = 0; i < inbandStreams.length ; i++ ) {
             var eventStream = new EventStream();
             eventStream.timescale = 1;
             eventStream.representation =  representation;
