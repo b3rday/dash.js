@@ -156,4 +156,5 @@ function RulesController() {
 RulesController.__dashjs_factory_name = 'RulesController';
 let factory =  FactoryMaker.getSingletonFactory(RulesController);
 factory.ABR_RULE = ABR_RULE;
+FactoryMaker.updateSingletonFactory(RulesController.__dashjs_factory_name, factory);
 export default factory;

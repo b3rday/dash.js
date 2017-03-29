@@ -56,7 +56,10 @@ import EventBus from './../core/EventBus';
 import Events from './../core/events/Events';
 import MediaPlayerEvents from './MediaPlayerEvents';
 import FactoryMaker from '../core/FactoryMaker';
-import {getVersionString} from './../core/Version';
+import {
+    getVersionString
+}
+from './../core/Version';
 
 //Dash
 import DashAdapter from '../dash/DashAdapter';
@@ -155,7 +158,9 @@ function MediaPlayer() {
         dashManifestModel = DashManifestModel(context).getInstance();
         dashMetrics = DashMetrics(context).getInstance();
         metricsModel = MetricsModel(context).getInstance();
-        metricsModel.setConfig({adapter: createAdaptor()});
+        metricsModel.setConfig({
+            adapter: createAdaptor()
+        });
 
         restoreDefaultUTCTimingSources();
         setAutoPlay(AutoPlay !== undefined ? AutoPlay : true);
@@ -502,7 +507,9 @@ function MediaPlayer() {
     function formatUTC(time, locales, hour12, withDate = false) {
         const dt = new Date(time * 1000);
         const d = dt.toLocaleDateString(locales);
-        const t = dt.toLocaleTimeString(locales, {hour12: hour12});
+        const t = dt.toLocaleTimeString(locales, {
+            hour12: hour12
+        });
         return withDate ? t + ' ' + d : t;
     }
 
@@ -1125,10 +1132,10 @@ function MediaPlayer() {
      * This method allows to set media settings that will be used to pick the initial track. Format of the settings
      * is following:
      * {lang: langValue,
-         *  viewpoint: viewpointValue,
-         *  audioChannelConfiguration: audioChannelConfigurationValue,
-         *  accessibility: accessibilityValue,
-         *  role: roleValue}
+     *  viewpoint: viewpointValue,
+     *  audioChannelConfiguration: audioChannelConfigurationValue,
+     *  accessibility: accessibilityValue,
+     *  role: roleValue}
      *
      *
      * @param {string} type
@@ -1144,10 +1151,10 @@ function MediaPlayer() {
      * This method returns media settings that is used to pick the initial track. Format of the settings
      * is following:
      * {lang: langValue,
-         *  viewpoint: viewpointValue,
-         *  audioChannelConfiguration: audioChannelConfigurationValue,
-         *  accessibility: accessibilityValue,
-         *  role: roleValue}
+     *  viewpoint: viewpointValue,
+     *  audioChannelConfiguration: audioChannelConfigurationValue,
+     *  accessibility: accessibilityValue,
+     *  role: roleValue}
      * @param {string} type
      * @returns {Object}
      * @memberof module:MediaPlayer
@@ -1333,6 +1340,40 @@ function MediaPlayer() {
     }
 
     /**
+     * Add a custom ABR Rule
+     * Rule will be apply on next stream if a stream is being played
+     *
+     * @param {string} type - rule type (one of ['qualitySwitchRules','abandonFragmentRules'])
+     * @param {string} rulename - name of rule (used to identify custom rule). If one rule of same name has been added, then existing rule will be updated
+     * @param {object} rule - the rule object instance
+     * @memberof module:MediaPlayer
+     * @instance
+     */
+    function addABRCustomRule(type, rulename, rule) {
+        mediaPlayerModel.addABRCustomRule(type, rulename, rule);
+    }
+
+    /**
+     * Remove a custom ABR Rule
+     *
+     * @param {string} rulename - name of the rule to be removed
+     * @memberof module:MediaPlayer
+     * @instance
+     */
+    function removeABRCustomRule(rulename) {
+        mediaPlayerModel.removeABRCustomRule(rulename);
+    }
+
+    /**
+     * Remove all custom rules
+     * @memberof module:MediaPlayer
+     * @instance
+     */
+    function removeAllABRCustomRule() {
+        mediaPlayerModel.removeAllABRCustomRule();
+    }
+
+    /**
      * Allows application to retrieve a manifest.  Manifest loading is asynchro
      * nous and
      * requires the app-provided callback function
@@ -1393,7 +1434,7 @@ function MediaPlayer() {
      * @instance
      */
     function addUTCTimingSource(schemeIdUri, value) {
-        removeUTCTimingSource(schemeIdUri, value);//check if it already exists and remove if so.
+        removeUTCTimingSource(schemeIdUri, value); //check if it already exists and remove if so.
         var vo = new UTCTiming();
         vo.schemeIdUri = schemeIdUri;
         vo.value = value;
@@ -1521,7 +1562,7 @@ function MediaPlayer() {
      * @memberof module:MediaPlayer
      * @instance
      */
-    function setBufferTimeAtTopQuality (value) {
+    function setBufferTimeAtTopQuality(value) {
         mediaPlayerModel.setBufferTimeAtTopQuality(value);
     }
 
@@ -1535,7 +1576,7 @@ function MediaPlayer() {
      * @memberof module:MediaPlayer
      * @instance
      */
-    function setBufferTimeAtTopQualityLongForm (value) {
+    function setBufferTimeAtTopQualityLongForm(value) {
         mediaPlayerModel.setBufferTimeAtTopQualityLongForm(value);
     }
 
@@ -1549,7 +1590,7 @@ function MediaPlayer() {
      * @memberof module:MediaPlayer
      * @instance
      */
-    function setLongFormContentDurationThreshold (value) {
+    function setLongFormContentDurationThreshold(value) {
         mediaPlayerModel.setLongFormContentDurationThreshold(value);
     }
 
@@ -1564,7 +1605,7 @@ function MediaPlayer() {
      * @memberof module:MediaPlayer
      * @instance
      */
-    function setRichBufferThreshold (value) {
+    function setRichBufferThreshold(value) {
         mediaPlayerModel.setRichBufferThreshold(value);
     }
 
@@ -1617,7 +1658,7 @@ function MediaPlayer() {
      * @memberof module:MediaPlayer
      * @instance
      */
-    function setFragmentLoaderRetryAttempts (value) {
+    function setFragmentLoaderRetryAttempts(value) {
         mediaPlayerModel.setFragmentRetryAttempts(value);
     }
 
@@ -1629,7 +1670,7 @@ function MediaPlayer() {
      * @memberof module:MediaPlayer
      * @instance
      */
-    function setFragmentLoaderRetryInterval (value) {
+    function setFragmentLoaderRetryInterval(value) {
         mediaPlayerModel.setFragmentRetryInterval(value);
     }
 
@@ -1712,7 +1753,9 @@ function MediaPlayer() {
      */
     function displayCaptionsOnTop(value) {
         let textTracks = TextTracks(context).getInstance();
-        textTracks.setConfig({videoModel: videoModel});
+        textTracks.setConfig({
+            videoModel: videoModel
+        });
         textTracks.initialize();
         textTracks.displayCConTop(value);
     }
@@ -1887,7 +1930,9 @@ function MediaPlayer() {
         abrRulesCollection.initialize();
 
         let sourceBufferController = SourceBufferController(context).getInstance();
-        sourceBufferController.setConfig({dashManifestModel: dashManifestModel});
+        sourceBufferController.setConfig({
+            dashManifestModel: dashManifestModel
+        });
 
         mediaController.initialize();
         mediaController.setConfig({
@@ -1896,7 +1941,9 @@ function MediaPlayer() {
 
         rulesController = RulesController(context).getInstance();
         rulesController.initialize();
-        rulesController.setConfig({abrRulesCollection: abrRulesCollection});
+        rulesController.setConfig({
+            abrRulesCollection: abrRulesCollection
+        });
 
         streamController = StreamController(context).getInstance();
         streamController.setConfig({
@@ -1937,7 +1984,9 @@ function MediaPlayer() {
         //TODO-Refactor Need to be able to switch this create out so will need API to set which adapter to use? Handler is created is inside streamProcessor so need to figure that out as well
         adapter = DashAdapter(context).getInstance();
         adapter.initialize();
-        adapter.setConfig({dashManifestModel: dashManifestModel});
+        adapter.setConfig({
+            dashManifestModel: dashManifestModel
+        });
         return adapter;
     }
 
@@ -1947,10 +1996,12 @@ function MediaPlayer() {
         }
         // do not require Protection as dependencies as this is optional and intended to be loaded separately
         let Protection = dashjs.Protection; /* jshint ignore:line */
-        if (typeof Protection === 'function') {//TODO need a better way to register/detect plugin components
+        if (typeof Protection === 'function') { //TODO need a better way to register/detect plugin components
             let protection = Protection(context).create();
             Events.extend(Protection.events);
-            MediaPlayerEvents.extend(Protection.events, { publicOnly: true });
+            MediaPlayerEvents.extend(Protection.events, {
+                publicOnly: true
+            });
             protectionController = protection.createProtectionSystem({
                 log: log,
                 videoModel: videoModel,
@@ -1970,7 +2021,7 @@ function MediaPlayer() {
         }
         // do not require MetricsReporting as dependencies as this is optional and intended to be loaded separately
         let MetricsReporting = dashjs.MetricsReporting; /* jshint ignore:line */
-        if (typeof MetricsReporting === 'function') {//TODO need a better way to register/detect plugin components
+        if (typeof MetricsReporting === 'function') { //TODO need a better way to register/detect plugin components
             let metricsReporting = MetricsReporting(context).create();
 
             metricsReportingController = metricsReporting.createMetricsReporting({
@@ -1993,10 +2044,11 @@ function MediaPlayer() {
         }
         // do not require MssHandler as dependencies as this is optional and intended to be loaded separately
         let MssHandler = dashjs.MssHandler; /* jshint ignore:line */
-        if (typeof MssHandler === 'function') {//TODO need a better way to register/detect plugin components
+        if (typeof MssHandler === 'function') { //TODO need a better way to register/detect plugin components
             mssHandler = MssHandler(context).create({
                 eventBus: eventBus,
-                mediaPlayerModel: mediaPlayerModel});
+                mediaPlayerModel: mediaPlayerModel
+            });
             return mssHandler;
         }
 
@@ -2126,6 +2178,9 @@ function MediaPlayer() {
         getAutoSwitchQualityFor: getAutoSwitchQualityFor,
         setAutoSwitchQualityFor: setAutoSwitchQualityFor,
         enableBufferOccupancyABR: enableBufferOccupancyABR,
+        addABRCustomRule: addABRCustomRule,
+        removeABRCustomRule: removeABRCustomRule,
+        removeAllABRCustomRule: removeAllABRCustomRule,
         setBandwidthSafetyFactor: setBandwidthSafetyFactor,
         getBandwidthSafetyFactor: getBandwidthSafetyFactor,
         setAbandonLoadTimeout: setAbandonLoadTimeout,
@@ -2165,4 +2220,6 @@ function MediaPlayer() {
 MediaPlayer.__dashjs_factory_name = 'MediaPlayer';
 let factory = FactoryMaker.getClassFactory(MediaPlayer);
 factory.events = MediaPlayerEvents;
+FactoryMaker.updateClassFactory(MediaPlayer.__dashjs_factory_name, factory);
+
 export default factory;
