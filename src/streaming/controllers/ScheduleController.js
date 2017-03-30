@@ -52,7 +52,6 @@ function ScheduleController(config) {
     const log = Debug(context).getInstance().log;
     const eventBus = EventBus(context).getInstance();
     const metricsModel = config.metricsModel;
-    const manifestModel = config.manifestModel;
     const adapter = config.adapter;
     const dashMetrics = config.dashMetrics;
     const dashManifestModel = config.dashManifestModel;
@@ -303,7 +302,7 @@ function ScheduleController(config) {
 
     function onDataUpdateCompleted(e) {
         if (e.error || e.sender.getStreamProcessor() !== streamProcessor) return;
-        currentRepresentationInfo = adapter.convertDataToTrack(manifestModel.getValue(), e.currentRepresentation);
+        currentRepresentationInfo = adapter.convertDataToTrack(e.currentRepresentation);
     }
 
     function onStreamInitialized(e) {
