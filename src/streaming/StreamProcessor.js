@@ -258,7 +258,6 @@ function StreamProcessor(config) {
         if (type === 'video' || type === 'audio') {
             controller = BufferController(context).create({
                 metricsModel: MetricsModel(context).getInstance(),
-                manifestModel: manifestModel,
                 sourceBufferController: SourceBufferController(context).getInstance(),
                 errHandler: ErrorHandler(context).getInstance(),
                 streamController: StreamController(context).getInstance(),
