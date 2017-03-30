@@ -1106,7 +1106,7 @@ function MediaPlayer() {
 
         streamInfo = streamInfo || adapter.getStreamsInfo(manifest)[0];
 
-        return streamInfo ? adapter.getAllMediaInfoForType(manifest, streamInfo, type) : [];
+        return streamInfo ? adapter.getAllMediaInfoForType(streamInfo, type, manifest) : [];
     }
 
     /**

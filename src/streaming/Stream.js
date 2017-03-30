@@ -330,7 +330,7 @@ function Stream(config) {
             manifestModel: manifestModel
         });
 
-        var allMediaForType = adapter.getAllMediaInfoForType(manifest, streamInfo, mediaInfo.type);
+        var allMediaForType = adapter.getAllMediaInfoForType(streamInfo, mediaInfo.type);
         streamProcessor.initialize(getMimeTypeOrType(mediaInfo), fragmentController, mediaSource, instance, eventController);
         abrController.updateTopQualityIndex(mediaInfo);
 
@@ -359,8 +359,7 @@ function Stream(config) {
     }
 
     function initializeMediaForType(type, mediaSource) {
-        var manifest = manifestModel.getValue();
-        var allMediaForType = adapter.getAllMediaInfoForType(manifest, streamInfo, type);
+        var allMediaForType = adapter.getAllMediaInfoForType(streamInfo, type);
 
         var mediaInfo = null;
         var initialMediaInfo;
