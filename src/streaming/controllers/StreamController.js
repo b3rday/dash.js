@@ -369,7 +369,7 @@ function StreamController() {
         return null;
     }
 
-    function composeStreams(manifest) {
+    function composeStreams() {
 
         try {
             const streamsInfo = adapter.getStreamsInfo();
@@ -422,7 +422,7 @@ function StreamController() {
             eventBus.trigger(Events.STREAMS_COMPOSED);
 
         } catch (e) {
-            errHandler.manifestError(e.message, 'nostreamscomposed', manifest);
+            errHandler.manifestError(e.message, 'nostreamscomposed', manifestModel.getValue());
             hasInitialisationError = true;
             reset();
         }
@@ -439,7 +439,7 @@ function StreamController() {
             }
         }
 
-        composeStreams(manifest);
+        composeStreams();
     }
 
     function onManifestUpdated(e) {
