@@ -126,7 +126,7 @@ function MediaController() {
 
         if (!track || (!isMultiTrackSupportedByType(mediaType))) return false;
 
-        tracks[streamId] = tracks[streamId] || createRepresentationInfo();
+        tracks[streamId] = tracks[streamId] || createTrackInfo();
 
         if (tracks[streamId][mediaType].list.indexOf(track) >= 0) return false;
 
@@ -436,7 +436,7 @@ function MediaController() {
         return tmpArr[0];
     }
 
-    function createRepresentationInfo() {
+    function createTrackInfo() {
         return {
             audio: {
                 list: [],
