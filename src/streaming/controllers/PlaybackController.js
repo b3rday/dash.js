@@ -351,7 +351,7 @@ function PlaybackController() {
     function onDataUpdateCompleted(e) {
         if (e.error) return;
 
-        let representationInfo = adapter.convertDataToTrack(manifestModel.getValue(), e.currentRepresentation);
+        let representationInfo = adapter.convertDataToRepresentationInfo(manifestModel.getValue(), e.currentRepresentation);
         let info = representationInfo.mediaInfo.streamInfo;
 
         if (streamInfo.id !== info.id) return;

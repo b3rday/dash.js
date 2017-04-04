@@ -303,7 +303,7 @@ function ScheduleController(config) {
 
     function onDataUpdateCompleted(e) {
         if (e.error || e.sender.getStreamProcessor() !== streamProcessor) return;
-        currentRepresentationInfo = adapter.convertDataToTrack(manifestModel.getValue(), e.currentRepresentation);
+        currentRepresentationInfo = adapter.convertDataToRepresentationInfo(manifestModel.getValue(), e.currentRepresentation);
     }
 
     function onStreamInitialized(e) {

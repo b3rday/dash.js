@@ -293,8 +293,8 @@ function RepresentationController() {
         }
 
         if (manifestUpdateInfo) {
-            for (var i = 0; i < manifestUpdateInfo.trackInfo.length; i++) {
-                repInfo = manifestUpdateInfo.trackInfo[i];
+            for (var i = 0; i < manifestUpdateInfo.representationInfo.length; i++) {
+                repInfo = manifestUpdateInfo.representationInfo[i];
                 if (repInfo.index === r.index && repInfo.mediaType === streamProcessor.getType()) {
                     alreadyAdded = true;
                     break;

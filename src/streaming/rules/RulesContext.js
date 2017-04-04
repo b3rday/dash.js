@@ -35,7 +35,7 @@ function RulesContext(config) {
 
     let instance;
     let representationInfo = config.streamProcessor.getCurrentRepresentationInfo();
-    let sp = config.streamProcessor;
+    let streamProcessor = config.streamProcessor;
     let currentValue = config.currentValue;
     let playbackIndex = config.playbackIndex;
     let switchHistory = config.switchHistory;
@@ -51,7 +51,7 @@ function RulesContext(config) {
         return representationInfo.mediaInfo;
     }
 
-    function getTrackInfo() {
+    function getRepresentationInfo() {
         return representationInfo;
     }
 
@@ -64,7 +64,7 @@ function RulesContext(config) {
     }
 
     function getStreamProcessor() {
-        return sp;
+        return streamProcessor;
     }
 
     function getPlaybackIndex() {
@@ -97,7 +97,7 @@ function RulesContext(config) {
         getSwitchHistory: getSwitchHistory,
         getStreamInfo: getStreamInfo,
         getStreamProcessor: getStreamProcessor,
-        getTrackInfo: getTrackInfo,
+        getRepresentationInfo: getRepresentationInfo,
         hasRichBuffer: hasRichBuffer
     };
 

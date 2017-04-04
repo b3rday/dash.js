@@ -29,7 +29,7 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-import TrackInfo from '../streaming/vo/TrackInfo';
+import RepresentationInfo from '../streaming/vo/RepresentationInfo';
 import MediaInfo from '../streaming/vo/MediaInfo';
 import StreamInfo from '../streaming/vo/StreamInfo';
 import ManifestInfo from '../streaming/vo/ManifestInfo';
@@ -60,8 +60,8 @@ function DashAdapter() {
         adaptations = {};
     }
 
-    function getRepresentationForTrackInfo(trackInfo, representationController) {
-        return representationController.getRepresentationForQuality(trackInfo.quality);
+    function getRepresentationForRepresentationInfo(representationInfo, representationController) {
+        return representationController.getRepresentationForQuality(representationInfo.quality);
     }
 
     function getAdaptationForMediaInfo(mediaInfo) {
@@ -81,21 +81,21 @@ function DashAdapter() {
         return null;
     }
 
-    function convertRepresentationToTrackInfo(manifest, representation) {
-        var trackInfo = new TrackInfo();
+    function convertRepresentationToRepresentationInfo(manifest, representation) {
+        var representationInfo = new RepresentationInfo();
         var a = representation.adaptation.period.mpd.manifest.Period_asArray[representation.adaptation.period.index].AdaptationSet_asArray[representation.adaptation.index];
         var r = dashManifestModel.getRepresentationFor(representation.index, a);
 
-        trackInfo.id = representation.id;
-        trackInfo.quality = representation.index;
-        trackInfo.bandwidth = dashManifestModel.getBandwidth(r);
-        trackInfo.DVRWindow = representation.segmentAvailabilityRange;
-        trackInfo.fragmentDuration = representation.segmentDuration || (representation.segments && representation.segments.length > 0 ? representation.segments[0].duration : NaN);
-        trackInfo.MSETimeOffset = representation.MSETimeOffset;
-        trackInfo.useCalculatedLiveEdgeTime = representation.useCalculatedLiveEdgeTime;
-        trackInfo.mediaInfo = convertAdaptationToMediaInfo(manifest, representation.adaptation);
+        representationInfo.id = representation.id;
+        representationInfo.quality = representation.index;
+        representationInfo.bandwidth = dashManifestModel.getBandwidth(r);
+        representationInfo.DVRWindow = representation.segmentAvailabilityRange;
+        representationInfo.fragmentDuration = representation.segmentDuration || (representation.segments && representation.segments.length > 0 ? representation.segments[0].duration : NaN);
+        representationInfo.MSETimeOffset = representation.MSETimeOffset;
+        representationInfo.useCalculatedLiveEdgeTime = representation.useCalculatedLiveEdgeTime;
+        representationInfo.mediaInfo = convertAdaptationToMediaInfo(manifest, representation.adaptation);
 
-        return trackInfo;
+        return representationInfo;
     }
 
     function convertAdaptationToMediaInfo(manifest, adaptation) {
@@ -294,18 +294,18 @@ function DashAdapter() {
         return streamProcessor.getIndexHandler().getInitRequest(representation);
     }
 
-    function getNextFragmentRequest(streamProcessor, trackInfo) {
-        var representation = getRepresentationForTrackInfo(trackInfo, streamProcessor.getRepresentationController());
+    function getNextFragmentRequest(streamProcessor, representationInfo) {
+        var representation = getRepresentationForRepresentationInfo(representationInfo, streamProcessor.getRepresentationController());
         return streamProcessor.getIndexHandler().getNextSegmentRequest(representation);
     }
 
-    function getFragmentRequestForTime(streamProcessor, trackInfo, time, options) {
-        var representation = getRepresentationForTrackInfo(trackInfo, streamProcessor.getRepresentationController());
+    function getFragmentRequestForTime(streamProcessor, representationInfo, time, options) {
+        var representation = getRepresentationForRepresentationInfo(representationInfo, streamProcessor.getRepresentationController());
         return streamProcessor.getIndexHandler().getSegmentRequestForTime(representation, time, options);
     }
 
-    function generateFragmentRequestForTime(streamProcessor, trackInfo, time) {
-        var representation = getRepresentationForTrackInfo(trackInfo, streamProcessor.getRepresentationController());
+    function generateFragmentRequestForTime(streamProcessor, representationInfo, time) {
+        var representation = getRepresentationForRepresentationInfo(representationInfo, streamProcessor.getRepresentationController());
         return streamProcessor.getIndexHandler().generateSegmentRequestForTime(representation, time);
     }
 
@@ -333,12 +333,12 @@ function DashAdapter() {
 
     function getRepresentationInfoForQuality(manifest, representationController, quality) {
         var representation = representationController.getRepresentationForQuality(quality);
-        return representation ? convertRepresentationToTrackInfo(manifest, representation) : null;
+        return representation ? convertRepresentationToRepresentationInfo(manifest, representation) : null;
     }
 
     function getCurrentRepresentationInfo(manifest, representationController) {
         var representation = representationController.getCurrentRepresentation();
-        return representation ? convertRepresentationToTrackInfo(manifest, representation) : null;
+        return representation ? convertRepresentationToRepresentationInfo(manifest, representation) : null;
     }
 
     function getEvent(eventBox, eventStreams, startTime) {
@@ -373,8 +373,8 @@ function DashAdapter() {
             events = dashManifestModel.getEventsForPeriod(manifest, getPeriodForStreamInfo(info));
         } else if (info instanceof MediaInfo) {
             events = dashManifestModel.getEventStreamForAdaptationSet(manifest, getAdaptationForMediaInfo(info));
-        } else if (info instanceof TrackInfo) {
-            events = dashManifestModel.getEventStreamForRepresentation(manifest, getRepresentationForTrackInfo(info, streamProcessor.getRepresentationController()));
+        } else if (info instanceof RepresentationInfo) {
+            events = dashManifestModel.getEventStreamForRepresentation(manifest, getRepresentationForRepresentationInfo(info, streamProcessor.getRepresentationController()));
         }
 
         return events;
@@ -387,10 +387,10 @@ function DashAdapter() {
 
     instance = {
         initialize: initialize,
-        convertDataToTrack: convertRepresentationToTrackInfo,
+        convertDataToRepresentationInfo: convertRepresentationToRepresentationInfo,
         convertDataToMedia: convertAdaptationToMediaInfo,
         convertDataToStream: convertPeriodToStreamInfo,
-        getDataForTrack: getRepresentationForTrackInfo,
+        getDataForRepresentationInfo: getRepresentationForRepresentationInfo,
         getDataForMedia: getAdaptationForMediaInfo,
         getDataForStream: getPeriodForStreamInfo,
         getStreamsInfo: getStreamsInfo,

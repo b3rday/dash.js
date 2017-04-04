@@ -124,11 +124,11 @@ function BolaRule(config) {
 
         const streamProcessor = rulesContext.getStreamProcessor();
         const streamInfo = rulesContext.getStreamInfo();
-        const trackInfo = rulesContext.getTrackInfo();
+        const representationInfo = rulesContext.getRepresentationInfo();
 
         const isDynamic = streamProcessor.isDynamic();
         const duration = streamInfo.manifestInfo.duration;
-        const fragmentDuration = trackInfo.fragmentDuration;
+        const fragmentDuration = representationInfo.fragmentDuration;
 
         const bitrates = mediaInfo.bitrateList.map(b => b.bandwidth);
         const params = calculateParameters(MINIMUM_BUFFER_S, BUFFER_TARGET_S, bitrates, null);
