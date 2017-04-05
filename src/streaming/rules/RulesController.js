@@ -69,11 +69,11 @@ function RulesController() {
                 reason,
                 confidence;
 
-            if (result.value !== SwitchRequest.NO_CHANGE) {
-                var newValue = overrideFunc(values[result.priority], result.value);
+            if (result.quality !== SwitchRequest.NO_CHANGE) {
+                var newValue = overrideFunc(values[result.priority], result.quality);
                 if (newValue !== values[result.priority]) {
                     // change in value
-                    values[result.priority] = newValue; // === result.value
+                    values[result.priority] = newValue; // === result.quality
                     reasons[result.priority] = result.reason;
                 }
             }
