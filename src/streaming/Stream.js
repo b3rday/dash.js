@@ -401,7 +401,7 @@ function Stream(config) {
         var manifest = manifestModel.getValue();
         var events;
 
-        eventController = EventController(context).getInstance();
+        eventController = EventController(context).create();
         eventController.initialize();
         eventController.setConfig({
             manifestModel: manifestModel,

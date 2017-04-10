@@ -148,9 +148,8 @@ function MediaPlayer() {
         if (mediaPlayerInitialized) return;
         mediaPlayerInitialized = true;
 
+        // init some controllers
         abrController = AbrController(context).getInstance();
-
-        playbackController = PlaybackController(context).getInstance();
         mediaController = MediaController(context).getInstance();
         mediaController.initialize();
         dashManifestModel = DashManifestModel(context).getInstance();
@@ -1888,44 +1887,67 @@ function MediaPlayer() {
         }
     }
 
-    function createControllers() {
+    function createPlaybackControllers() {
 
+        // creates or get objects instances
         let abrRulesCollection = ABRRulesCollection(context).getInstance();
-        abrRulesCollection.initialize();
-
         let sourceBufferController = SourceBufferController(context).getInstance();
-        sourceBufferController.setConfig({dashManifestModel: dashManifestModel});
+        let manifestLoader = createManifestLoader();
+        let manifestModel = ManifestModel(context).getInstance();
+        let liveEdgeFinder = LiveEdgeFinder(context).getInstance();
+        let mediaSourceController = MediaSourceController(context).getInstance();
+        let timeSyncController = TimeSyncController(context).getInstance();
+        let baseURLController = BaseURLController(context).getInstance();
+        let timelineConverter = TimelineConverter(context).getInstance();
 
-        mediaController.initialize();
+        playbackController = PlaybackController(context).getInstance();
+        streamController = StreamController(context).getInstance();
+        textController = TextController(context).getInstance();
+
+        // configure controllers
         mediaController.setConfig({
             errHandler: errHandler
         });
 
-        streamController = StreamController(context).getInstance();
+        sourceBufferController.setConfig({
+            dashManifestModel: dashManifestModel
+        });
+
         streamController.setConfig({
             capabilities: capabilities,
-            manifestLoader: createManifestLoader(),
-            manifestModel: ManifestModel(context).getInstance(),
+            manifestLoader: manifestLoader,
+            manifestModel: manifestModel,
             dashManifestModel: dashManifestModel,
             protectionController: protectionController,
             adapter: adapter,
             metricsModel: metricsModel,
             dashMetrics: dashMetrics,
-            liveEdgeFinder: LiveEdgeFinder(context).getInstance(),
-            mediaSourceController: MediaSourceController(context).getInstance(),
-            timeSyncController: TimeSyncController(context).getInstance(),
-            baseURLController: BaseURLController(context).getInstance(),
+            liveEdgeFinder: liveEdgeFinder,
+            mediaSourceController: mediaSourceController,
+            timeSyncController: timeSyncController,
+            baseURLController: baseURLController,
             errHandler: errHandler,
-            timelineConverter: TimelineConverter(context).getInstance()
+            timelineConverter: timelineConverter,
+            videoModel: videoModel,
+            playbackController: playbackController
         });
-        streamController.initialize(autoPlay, protectionData);
+
+        playbackController.setConfig({
+            streamController: streamController,
+            timelineConverter: timelineConverter,
+            metricsModel: metricsModel,
+            dashMetrics: dashMetrics,
+            manifestModel: manifestModel,
+            dashManifestModel: dashManifestModel,
+            adapter: adapter,
+            videoModel: videoModel
+        });
 
         abrController.setConfig({
             abrRulesCollection: abrRulesCollection,
             streamController: streamController
         });
 
-        textController = TextController(context).getInstance();
         textController.setConfig({
             errHandler: errHandler,
             dashManifestModel: dashManifestModel,
@@ -1933,6 +1955,10 @@ function MediaPlayer() {
             streamController: streamController,
             videoModel: videoModel
         });
+        // initialises controller
+        abrRulesCollection.initialize();
+        mediaController.initialize();
+        streamController.initialize(autoPlay, protectionData);
     }
 
     function createManifestLoader() {
@@ -2047,9 +2073,11 @@ function MediaPlayer() {
 
     function initializePlayback() {
         if (!playbackInitialized) {
+            createPlaybackControllers();
+
             playbackInitialized = true;
             log('Playback Initialized');
-            createControllers();
+
             if (typeof source === 'string') {
                 streamController.load(source);
             } else {
