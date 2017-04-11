@@ -257,8 +257,9 @@ function Stream(config) {
             return false;
         }
 
-        if ((type === 'text') || (type === 'fragmentedText') || (type === 'embeddedText')) return true;
-
+        if ((type === 'text') || (type === 'fragmentedText') || (type === 'embeddedText')) {
+            return true;
+        }
         codec = mediaInfo.codec;
         log(type + ' codec: ' + codec);
 
@@ -275,11 +276,13 @@ function Stream(config) {
     }
 
     function onCurrentTrackChanged(e) {
-        if (e.newMediaInfo.streamInfo.id !== streamInfo.id) return;
-
+        if (e.newMediaInfo.streamInfo.id !== streamInfo.id) {
+            return;
+        }
         var processor = getProcessorForMediaInfo(e.oldMediaInfo);
-        if (!processor) return;
-
+        if (!processor) {
+            return;
+        }
         var currentTime = playbackController.getTime();
         var buffer = processor.getBuffer();
         var mediaInfo = e.newMediaInfo;
@@ -289,14 +292,18 @@ function Stream(config) {
 
         if (mediaInfo.type !== 'fragmentedText') {
             processor.reset(true);
-            createStreamProcessor(mediaInfo, manifest, mediaSource, {buffer: buffer, replaceIdx: idx, currentTime: currentTime});
+            createStreamProcessor(mediaInfo, manifest, mediaSource, {
+                buffer: buffer,
+                replaceIdx: idx,
+                currentTime: currentTime
+            });
             playbackController.seek(playbackController.getTime());
-        }else {
+        } else {
             processor.updateMediaInfo(manifest, mediaInfo);
         }
     }
 
-    function isWebM (mimeType) {
+    function isWebM(mimeType) {
         let type = mimeType.split('/')[1];
 
         return 'webm' === type.toLowerCase();
@@ -324,14 +331,19 @@ function Stream(config) {
 
     function createStreamProcessor(mediaInfo, manifest, mediaSource, optionalSettings) {
         var streamProcessor = StreamProcessor(context).create({
+            type: getMimeTypeOrType(mediaInfo),
             indexHandler: createIndexHandler(mediaInfo),
             timelineConverter: timelineConverter,
             adapter: adapter,
-            manifestModel: manifestModel
+            manifestModel: manifestModel,
+            fragmentController: fragmentController,
+            stream: instance,
+            eventController: eventController,
+            abrController: abrController
         });
 
         var allMediaForType = adapter.getAllMediaInfoForType(manifest, streamInfo, mediaInfo.type);
-        streamProcessor.initialize(getMimeTypeOrType(mediaInfo), fragmentController, mediaSource, instance, eventController);
+        streamProcessor.initialize(mediaSource);
         abrController.updateTopQualityIndex(mediaInfo);
 
         if (optionalSettings) {
@@ -348,12 +360,12 @@ function Stream(config) {
                 if (allMediaForType[i].index === mediaInfo.index) {
                     idx = i;
                 }
-                streamProcessor.updateMediaInfo(manifest, allMediaForType[i]);//creates text tracks for all adaptations in one stream processor
+                streamProcessor.updateMediaInfo(manifest, allMediaForType[i]); //creates text tracks for all adaptations in one stream processor
             }
             if (mediaInfo.type === 'fragmentedText') {
-                streamProcessor.updateMediaInfo(manifest, allMediaForType[idx]);//sets the initial media info
+                streamProcessor.updateMediaInfo(manifest, allMediaForType[idx]); //sets the initial media info
             }
-        }else {
+        } else {
             streamProcessor.updateMediaInfo(manifest, mediaInfo);
         }
     }
@@ -376,8 +388,9 @@ function Stream(config) {
             if (type === 'embeddedText') {
                 textController.addEmbeddedTrack(mediaInfo);
             } else {
-                if (!isMediaSupported(mediaInfo, mediaSource, manifest)) continue;
-
+                if (!isMediaSupported(mediaInfo, mediaSource, manifest)) {
+                    continue;
+                }
                 if (mediaController.isMultiTrackSupportedByType(mediaInfo.type)) {
                     mediaController.addTrack(mediaInfo, streamInfo);
                 }
@@ -443,15 +456,22 @@ function Stream(config) {
         var i = 0;
 
         for (i; i < ln; i++) {
-            if (streamProcessors[i].isUpdating() || isUpdating) return;
+            if (streamProcessors[i].isUpdating() || isUpdating) {
+                return;
+            }
         }
 
         initialized = true;
-        if (!isMediaInitialized) return;
+        if (!isMediaInitialized) {
+            return;
+        }
         if (protectionController) {
             protectionController.initialize(manifestModel.getValue(), getMediaInfo('audio'), getMediaInfo('video'));
         }
-        eventBus.trigger(Events.STREAM_INITIALIZED, {streamInfo: streamInfo, error: error});
+        eventBus.trigger(Events.STREAM_INITIALIZED, {
+            streamInfo: streamInfo,
+            error: error
+        });
     }
 
     function getMediaInfo(type) {
@@ -461,7 +481,9 @@ function Stream(config) {
         for (var i = 0; i < ln; i++) {
             mediaCtrl = streamProcessors[i];
 
-            if (mediaCtrl.getType() === type) return mediaCtrl.getMediaInfo();
+            if (mediaCtrl.getType() === type) {
+                return mediaCtrl.getMediaInfo();
+            }
         }
 
         return null;
@@ -474,7 +496,9 @@ function Stream(config) {
     }
 
     function onBufferingCompleted(e) {
-        if (e.streamInfo !== streamInfo) return;
+        if (e.streamInfo !== streamInfo) {
+            return;
+        }
 
         var processors = getProcessors();
         var ln = processors.length;
@@ -482,23 +506,31 @@ function Stream(config) {
 
         // if there is at least one buffer controller that has not completed buffering yet do nothing
         for (i; i < ln; i++) {
-            if (!processors[i].isBufferingCompleted()) return;
+            if (!processors[i].isBufferingCompleted()) {
+                return;
+            }
         }
 
-        eventBus.trigger(Events.STREAM_BUFFERING_COMPLETED, {streamInfo: streamInfo});
+        eventBus.trigger(Events.STREAM_BUFFERING_COMPLETED, {
+            streamInfo: streamInfo
+        });
     }
 
     function onDataUpdateCompleted(e) {
         var sp = e.sender.getStreamProcessor();
 
-        if (sp.getStreamInfo() !== streamInfo) return;
+        if (sp.getStreamInfo() !== streamInfo) {
+            return;
+        }
 
         updateError[sp.getType()] = e.error;
         checkIfInitializationCompleted();
     }
 
     function getProcessorForMediaInfo(mediaInfo) {
-        if (!mediaInfo) return false;
+        if (!mediaInfo) {
+            return false;
+        }
 
         var processors = getProcessors();
 

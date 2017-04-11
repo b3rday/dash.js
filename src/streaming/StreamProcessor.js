@@ -29,7 +29,6 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 
-import AbrController from './controllers/AbrController';
 import BufferController from './controllers/BufferController';
 import StreamController from './controllers/StreamController';
 import MediaController from './controllers/MediaController';
@@ -51,45 +50,40 @@ function StreamProcessor(config) {
 
     let context = this.context;
 
+    let type = config.type;
     let indexHandler = config.indexHandler;
     let timelineConverter = config.timelineConverter;
     let adapter = config.adapter;
     let manifestModel = config.manifestModel;
+    let fragmentController = config.fragmentController;
+    let eventController = config.eventController;
+    let stream = config.stream;
+    let abrController = config.abrController;
 
     let instance,
         dynamic,
         mediaInfo,
-        type,
         mediaInfoArr,
-        stream,
-        eventController,
-        abrController,
         bufferController,
         scheduleController,
         representationController,
-        fragmentController,
         fragmentLoader,
         fragmentModel;
-
 
     function setup() {
         mediaInfoArr = [];
     }
 
-    function initialize(Type, FragmentController, mediaSource, Stream, EventController) {
+    function initialize(mediaSource) {
 
-        type = Type;
-        stream = Stream;
-        eventController = EventController;
-        fragmentController = FragmentController;
         dynamic = stream.getStreamInfo().manifestInfo.isDynamic;
 
+        // initialize controllers
         indexHandler.initialize(this);
 
-        abrController = AbrController(context).getInstance();
-        abrController.initialize(type, this);
+        abrController.registerStreamProcessor(type, this);
 
-        bufferController = createBufferControllerForType(Type);
+        bufferController = createBufferControllerForType(type);
         scheduleController = ScheduleController(context).create({
             metricsModel: MetricsModel(context).getInstance(),
             manifestModel: manifestModel,
