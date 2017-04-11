@@ -40,14 +40,14 @@ function NotFragmentedTextBufferController(config) {
 
     let sourceBufferController = config.sourceBufferController;
     let errHandler = config.errHandler;
+    let type = config.type;
+    let streamProcessor = config.streamProcessor;
 
     let instance,
         isBufferingCompleted,
         initialized,
         mediaSource,
         buffer,
-        type,
-        streamProcessor,
         representationController,
         initCache;
 
@@ -56,8 +56,6 @@ function NotFragmentedTextBufferController(config) {
         initialized = false;
         mediaSource = null;
         buffer = null;
-        type = null;
-        streamProcessor = null;
         representationController = null;
         isBufferingCompleted = false;
 
@@ -65,10 +63,8 @@ function NotFragmentedTextBufferController(config) {
         eventBus.on(Events.INIT_FRAGMENT_LOADED, onInitFragmentLoaded, this);
     }
 
-    function initialize(Type, source, StreamProcessor) {
-        type = Type;
+    function initialize(source) {
         setMediaSource(source);
-        streamProcessor = StreamProcessor;
         representationController = streamProcessor.getRepresentationController();
         initCache = InitCache(context).getInstance();
     }

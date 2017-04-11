@@ -58,9 +58,10 @@ function ScheduleController(config) {
     const dashManifestModel = config.dashManifestModel;
     const timelineConverter = config.timelineConverter;
     const mediaPlayerModel = config.mediaPlayerModel;
+    const type = config.type;
+    let streamProcessor = config.streamProcessor;
 
     let instance,
-        type,
         fragmentModel,
         isDynamic,
         currentRepresentationInfo,
@@ -76,10 +77,8 @@ function ScheduleController(config) {
         playbackController,
         mediaController,
         abrController,
-        streamProcessor,
         streamController,
         fragmentController,
-        bufferController,
         bufferLevelRule,
         nextFragmentRequestRule,
         scheduleWhilePaused,
@@ -103,15 +102,12 @@ function ScheduleController(config) {
         seekTarget = NaN;
     }
 
-    function initialize(Type, StreamProcessor) {
-        type = Type;
-        streamProcessor = StreamProcessor;
+    function initialize() {
         playbackController = PlaybackController(context).getInstance();
         mediaController = MediaController(context).getInstance();
         abrController = AbrController(context).getInstance();
         streamController = StreamController(context).getInstance();
         fragmentController = streamProcessor.getFragmentController();
-        bufferController = streamProcessor.getBufferController();
         fragmentModel = fragmentController.getModel(type);
         isDynamic = streamProcessor.isDynamic();
         scheduleWhilePaused = mediaPlayerModel.getScheduleWhilePaused();
@@ -153,7 +149,7 @@ function ScheduleController(config) {
     }
 
     function start() {
-        if (!currentRepresentationInfo || bufferController.getIsBufferingCompleted()) return;
+        if (!currentRepresentationInfo || streamProcessor.getBufferController().getIsBufferingCompleted()) return;
         addPlaylistTraceMetrics();
         isStopped = false;
 
@@ -189,7 +185,7 @@ function ScheduleController(config) {
 
     function schedule() {
 
-        if (isStopped || isFragmentProcessingInProgress || !bufferController || playbackController.isPaused() && !scheduleWhilePaused) return;
+        if (isStopped || isFragmentProcessingInProgress || !streamProcessor.getBufferController() || playbackController.isPaused() && !scheduleWhilePaused) return;
 
         validateExecutedFragmentRequest();
 
@@ -200,6 +196,7 @@ function ScheduleController(config) {
            ) {
 
             const getNextFragment = function () {
+                let bufferController = streamProcessor.getBufferController();
                 if (currentRepresentationInfo.quality !== lastInitQuality) {
                     lastInitQuality = currentRepresentationInfo.quality;
                     bufferController.switchInitData(streamProcessor.getStreamInfo().id, currentRepresentationInfo.id);
@@ -238,6 +235,8 @@ function ScheduleController(config) {
         //Validate that the fragment request executed and appended into the source buffer is as
         // good of quality as the current quality and is the correct media track.
         const safeBufferLevel = currentRepresentationInfo.fragmentDuration * 1.5;
+        let bufferController = streamProcessor.getBufferController();
+
         const request = fragmentModel.getRequests({state: FragmentModel.FRAGMENT_MODEL_EXECUTED, time: playbackController.getTime() + safeBufferLevel, threshold: 0})[0];
 
         if (request && replaceRequestArray.indexOf(request) === -1 && !dashManifestModel.getIsTextTrack(type)) {
