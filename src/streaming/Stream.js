@@ -199,6 +199,14 @@ function Stream(config) {
         return streamInfo;
     }
 
+    function getEventController() {
+        return eventController;
+    }
+
+    function getFragmentController() {
+        return fragmentController;
+    }
+
     function hasMedia(type) {
         return (getMediaInfo(type) !== null);
     }
@@ -336,9 +344,7 @@ function Stream(config) {
             timelineConverter: timelineConverter,
             adapter: adapter,
             manifestModel: manifestModel,
-            fragmentController: fragmentController,
             stream: instance,
-            eventController: eventController,
             abrController: abrController
         });
 
@@ -595,6 +601,8 @@ function Stream(config) {
         getStreamIndex: getStreamIndex,
         getId: getId,
         getStreamInfo: getStreamInfo,
+        getFragmentController: getFragmentController,
+        getEventController: getEventController,
         hasMedia: hasMedia,
         getBitrateListFor: getBitrateListFor,
         startEventController: startEventController,

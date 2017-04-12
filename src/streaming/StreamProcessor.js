@@ -53,8 +53,6 @@ function StreamProcessor(config) {
     let timelineConverter = config.timelineConverter;
     let adapter = config.adapter;
     let manifestModel = config.manifestModel;
-    let fragmentController = config.fragmentController;
-    let eventController = config.eventController;
     let stream = config.stream;
     let abrController = config.abrController;
 
@@ -79,7 +77,7 @@ function StreamProcessor(config) {
         indexHandler.initialize(this);
         abrController.registerStreamType(type, this);
 
-        fragmentModel = fragmentController.getModel(type);
+        fragmentModel = stream.getFragmentController().getModel(type);
 
         bufferController = createBufferControllerForType(type);
         scheduleController = ScheduleController(context).create({
@@ -121,10 +119,6 @@ function StreamProcessor(config) {
             representationController.reset();
             representationController = null;
         }
-
-        fragmentController = null;
-
-        eventController = null;
         stream = null;
         dynamic = null;
         mediaInfo = null;
@@ -153,7 +147,7 @@ function StreamProcessor(config) {
     }
 
     function getFragmentController() {
-        return fragmentController;
+        return stream ? stream.getFragmentController() : null;
     }
 
     function getBuffer() {
@@ -174,6 +168,10 @@ function StreamProcessor(config) {
 
     function getStreamInfo() {
         return stream ? stream.getStreamInfo() : null;
+    }
+
+    function getEventController() {
+        return stream ? stream.getEventController() : null;
     }
 
     function updateMediaInfo(manifest, newMediaInfo) {
@@ -200,10 +198,6 @@ function StreamProcessor(config) {
 
     function getScheduleController() {
         return scheduleController;
-    }
-
-    function getEventController() {
-        return eventController;
     }
 
     function start() {
