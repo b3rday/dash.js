@@ -36,8 +36,6 @@ import TextBufferController from './text/TextBufferController';
 import ScheduleController from './controllers/ScheduleController';
 import MediaPlayerModel from './models/MediaPlayerModel';
 import MetricsModel from './models/MetricsModel';
-import FragmentLoader from './FragmentLoader';
-import RequestModifier from './utils/RequestModifier';
 import SourceBufferController from './controllers/SourceBufferController';
 import TextController from './text/TextController';
 import DashManifestModel from '../dash/models/DashManifestModel';
@@ -67,7 +65,6 @@ function StreamProcessor(config) {
         bufferController,
         scheduleController,
         representationController,
-        fragmentLoader,
         fragmentModel;
 
     function setup() {
@@ -82,13 +79,7 @@ function StreamProcessor(config) {
         indexHandler.initialize(this);
         abrController.registerStreamProcessor(type, this);
 
-        fragmentLoader = FragmentLoader(context).create({
-            metricsModel: MetricsModel(context).getInstance(),
-            errHandler: ErrorHandler(context).getInstance(),
-            requestModifier: RequestModifier(context).getInstance()
-        });
         fragmentModel = fragmentController.getModel(type);
-        fragmentModel.setLoader(fragmentLoader);
 
         bufferController = createBufferControllerForType(type);
         scheduleController = ScheduleController(context).create({
@@ -132,7 +123,6 @@ function StreamProcessor(config) {
         }
 
         fragmentController = null;
-        fragmentLoader = null;
 
         eventController = null;
         stream = null;
@@ -156,10 +146,6 @@ function StreamProcessor(config) {
 
     function getRepresentationController() {
         return representationController;
-    }
-
-    function getFragmentLoader() {
-        return fragmentLoader;
     }
 
     function getIndexHandler() {
@@ -264,7 +250,7 @@ function StreamProcessor(config) {
                 textController: TextController(context).getInstance(),
                 streamProcessor: instance
             });
-        }else {
+        } else {
             controller = TextBufferController(context).create({
                 type: type,
                 metricsModel: MetricsModel(context).getInstance(),
@@ -288,7 +274,6 @@ function StreamProcessor(config) {
         getType: getType,
         getBufferController: getBufferController,
         getABRController: getABRController,
-        getFragmentLoader: getFragmentLoader,
         getFragmentModel: getFragmentModel,
         getScheduleController: getScheduleController,
         getEventController: getEventController,

@@ -28,16 +28,21 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  */
-import {HTTPRequest} from '../vo/metrics/HTTPRequest';
+import {
+    HTTPRequest
+} from '../vo/metrics/HTTPRequest';
 import DataChunk from '../vo/DataChunk';
 import FragmentModel from '../models/FragmentModel';
 import MetricsModel from '../models/MetricsModel';
+import FragmentLoader from '../FragmentLoader';
+import RequestModifier from '../utils/RequestModifier';
+import ErrorHandler from '../utils/ErrorHandler';
 import EventBus from '../../core/EventBus';
 import Events from '../../core/events/Events';
 import FactoryMaker from '../../core/FactoryMaker';
 import Debug from '../../core/Debug';
 
-function FragmentController(/*config*/) {
+function FragmentController( /*config*/ ) {
 
     const context = this.context;
     const log = Debug(context).getInstance().log;
@@ -54,7 +59,17 @@ function FragmentController(/*config*/) {
     function getModel(type) {
         let model = fragmentModels[type];
         if (!model) {
-            model = FragmentModel(context).create({metricsModel: MetricsModel(context).getInstance()});
+            model = FragmentModel(context).create({
+                metricsModel: MetricsModel(context).getInstance()
+            });
+
+            // create a fragment loader for this new model
+            let fragmentLoader = FragmentLoader(context).create({
+                metricsModel: MetricsModel(context).getInstance(),
+                errHandler: ErrorHandler(context).getInstance(),
+                requestModifier: RequestModifier(context).getInstance()
+            });
+            model.setLoader(fragmentLoader);
             fragmentModels[type] = model;
         }
 
@@ -91,7 +106,9 @@ function FragmentController(/*config*/) {
     }
 
     function onFragmentLoadingCompleted(e) {
-        if (fragmentModels[e.request.mediaType] !== e.sender) return;
+        if (fragmentModels[e.request.mediaType] !== e.sender) {
+            return;
+        }
 
         const request = e.request;
         const bytes = e.response;
@@ -104,7 +121,10 @@ function FragmentController(/*config*/) {
         }
 
         const chunk = createDataChunk(bytes, request, streamInfo.id);
-        eventBus.trigger(isInit ? Events.INIT_FRAGMENT_LOADED : Events.MEDIA_FRAGMENT_LOADED, {chunk: chunk, fragmentModel: e.sender});
+        eventBus.trigger(isInit ? Events.INIT_FRAGMENT_LOADED : Events.MEDIA_FRAGMENT_LOADED, {
+            chunk: chunk,
+            fragmentModel: e.sender
+        });
     }
 
     instance = {
