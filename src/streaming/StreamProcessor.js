@@ -154,10 +154,6 @@ function StreamProcessor(config) {
         return type;
     }
 
-    function getABRController() {
-        return abrController;
-    }
-
     function getRepresentationController() {
         return representationController;
     }
@@ -288,7 +284,6 @@ function StreamProcessor(config) {
         isUpdating: isUpdating,
         getType: getType,
         getBufferController: getBufferController,
-        getABRController: getABRController,
         getFragmentLoader: getFragmentLoader,
         getFragmentModel: getFragmentModel,
         getScheduleController: getScheduleController,
