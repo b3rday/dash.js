@@ -32,7 +32,6 @@ import Events from '../../core/events/Events';
 import EventBus from '../../core/EventBus';
 import FactoryMaker from '../../core/FactoryMaker';
 import Debug from '../../core/Debug';
-import TextController from '../text/TextController';
 import DOMStorage from '../utils/DOMStorage';
 
 const TRACK_SWITCH_MODE_NEVER_REPLACE = 'neverReplace';
@@ -46,7 +45,6 @@ function MediaController() {
     let context = this.context;
     let log = Debug(context).getInstance().log;
     let eventBus = EventBus(context).getInstance();
-    let textController = TextController(context).getInstance();
     let domStorage = DOMStorage(context).getInstance();
 
     let instance,
@@ -326,7 +324,6 @@ function MediaController() {
      */
     function reset() {
         initialize();
-        textController.reset();
     }
 
     function extractSettings(mediaInfo) {
