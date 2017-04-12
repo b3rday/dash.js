@@ -115,7 +115,7 @@ function AbrController() {
         lastSwitchTime = new Date().getTime() / 1000;
     }
 
-    function registerStreamProcessor(type, streamProcessor) {
+    function registerStreamType(type, streamProcessor) {
         switchHistoryDict[type] = SwitchRequestHistory(context).create();
         streamProcessorDict[type] = streamProcessor;
         abandonmentStateDict[type] = abandonmentStateDict[type] || {};
@@ -628,7 +628,7 @@ function AbrController() {
         getTopQualityIndexFor: getTopQualityIndexFor,
         setElementSize: setElementSize,
         setWindowResizeEventCalled: setWindowResizeEventCalled,
-        registerStreamProcessor: registerStreamProcessor,
+        registerStreamType: registerStreamType,
         setConfig: setConfig,
         reset: reset
     };

@@ -77,7 +77,7 @@ function StreamProcessor(config) {
 
         // initialize controllers
         indexHandler.initialize(this);
-        abrController.registerStreamProcessor(type, this);
+        abrController.registerStreamType(type, this);
 
         fragmentModel = fragmentController.getModel(type);
 
