@@ -217,7 +217,7 @@ function TTMLParser() {
             type,
             i;
 
-        var errorMsg = '';
+        let errorMsg = '';
 
         // Parse the TTML in a JSON object.
         ttml = converter.xml_str2json(data);
@@ -237,7 +237,7 @@ function TTMLParser() {
         }
 
         // Get the namespace if there is one defined in the JSON object.
-        var ttNS = getNamespacePrefix(tt, 'http://www.w3.org/ns/ttml');
+        let ttNS = getNamespacePrefix(tt, 'http://www.w3.org/ns/ttml');
 
         // Remove the namespace before each node if it exists:
         if (ttNS) {
@@ -285,17 +285,17 @@ function TTMLParser() {
         }
 
         // Extract the cellResolution information
-        var cellResolution = getCellResolution();
+        let cellResolution = getCellResolution();
 
         // Recover the video width and height displayed by the player.
-        var videoWidth = videoModel.getElement().clientWidth;
-        var videoHeight = videoModel.getElement().clientHeight;
+        let videoWidth = videoModel.getElement().clientWidth;
+        let videoHeight = videoModel.getElement().clientHeight;
 
         // Compute the CellResolution unit in order to process properties using sizing (fontSize, linePadding, etc).
-        var cellUnit = [videoWidth / cellResolution[0], videoHeight / cellResolution[1]];
+        let cellUnit = [videoWidth / cellResolution[0], videoHeight / cellResolution[1]];
         defaultStyleProperties['font-size'] = cellUnit[1] + 'px;';
 
-        var regions = [];
+        let regions = [];
         if (ttmlLayout) {
             for (i = 0; i < ttmlLayout.length; i++) {
                 regions.push(processRegion(JSON.parse(JSON.stringify(ttmlLayout[i])), cellUnit));
@@ -303,15 +303,15 @@ function TTMLParser() {
         }
 
         // Get the namespace prefix.
-        var nsttp = getNamespacePrefix(ttml.tt, 'http://www.w3.org/ns/ttml#parameter');
+        let nsttp = getNamespacePrefix(ttml.tt, 'http://www.w3.org/ns/ttml#parameter');
 
         // Set the framerate.
         if (tt.hasOwnProperty(nsttp + ':frameRate')) {
             tt.frameRate = parseInt(tt[nsttp + ':frameRate'], 10);
         }
-        var captionArray = [];
+        let captionArray = [];
         // Extract the div
-        var divs = tt.body_asArray[0].__children;
+        let divs = tt.body_asArray[0].__children;
 
         // Timing is either on div, paragraph or span level.
 
@@ -401,28 +401,28 @@ function TTMLParser() {
                          * Find the region defined for the cue.
                          */
                         // properties to be put in the "captionRegion" HTML element.
-                        var cueRegionProperties = constructCueRegion(paragraph, div, cellUnit);
+                        let cueRegionProperties = constructCueRegion(paragraph, div, cellUnit);
 
                         /**
                          * Find the style defined for the cue.
                          */
                         // properties to be put in the "paragraph" HTML element.
-                        var cueStyleProperties = constructCueStyle(paragraph, cellUnit);
+                        let cueStyleProperties = constructCueStyle(paragraph, cellUnit);
 
                         /**
                          * /!\ Create the cue HTML Element containing the whole cue.
                          */
-                        var styleIDs = cueStyleProperties[1];
+                        let styleIDs = cueStyleProperties[1];
                         cueStyleProperties = cueStyleProperties[0];
 
                         // Final cue HTML element.
-                        var cueParagraph = document.createElement('div');
+                        let cueParagraph = document.createElement('div');
                         cueParagraph.className = styleIDs;
 
                         // Create a wrapper containing the cue information about unicodeBidi and direction
                         // as they need to be defined on at this level.
                         // We append to the wrapper the cue itself.
-                        var cueDirUniWrapper = constructCue(childrenInInterval, cellUnit);
+                        let cueDirUniWrapper = constructCue(childrenInInterval, cellUnit);
                         cueDirUniWrapper.className = 'cueDirUniWrapper';
 
                         // If the style defines these two properties, we place them in cueContainer
@@ -452,9 +452,9 @@ function TTMLParser() {
                         }
 
                         // Remove the ID of the region from being added at the "paragraph" element level.
-                        var regionID = '';
+                        let regionID = '';
                         if (arrayContains('regionID', cueRegionProperties)) {
-                            var wholeRegionID = getPropertyFromArray('regionID', cueRegionProperties);
+                            let wholeRegionID = getPropertyFromArray('regionID', cueRegionProperties);
                             regionID = wholeRegionID.slice(wholeRegionID.indexOf(':') + 1, wholeRegionID.length - 1);
                         }
 
@@ -471,7 +471,7 @@ function TTMLParser() {
                         cueParagraph.appendChild(cueDirUniWrapper);
 
                         // Final cue.
-                        var finalCue = document.createElement('div');
+                        let finalCue = document.createElement('div');
                         finalCue.appendChild(cueParagraph);
                         finalCue.id = getCueID();
                         finalCue.style.cssText = 'position: absolute; margin: 0; display: flex; box-sizing: border-box; pointer-events: none;' + cueRegionProperties;
@@ -500,12 +500,12 @@ function TTMLParser() {
                         });
 
                     } else {
-                        var text = '';
-                        var textElements = childrenInInterval;
+                        let text = '';
+                        let textElements = childrenInInterval;
                         if (textElements.length) {
                             textElements.forEach(function (el) {
                                 if (el.hasOwnProperty('span')) {
-                                    var spanElements = el.span.__children;
+                                    let spanElements = el.span.__children;
                                     spanElements.forEach(function (spanEl) {
                                         // If metadata is present, do not process.
                                         if (spanElements.hasOwnProperty('metadata')) {
@@ -659,8 +659,8 @@ function TTMLParser() {
 
     function parseTimings(timingStr) {
         // Test if the time provided by the caption is valid.
-        var test = timingRegex.test(timingStr);
-        var timeParts,
+        let test = timingRegex.test(timingStr);
+        let timeParts,
             parsedTime,
             frameRate;
 
@@ -690,7 +690,7 @@ function TTMLParser() {
 
     function getNamespacePrefix(json, ns) {
         // Obtain the namespace prefix.
-        var r = Object.keys(json)
+        let r = Object.keys(json)
             .filter(function (k) {
                 return (k.split(':')[0] === 'xmlns' || k.split(':')[1] === 'xmlns') && json[k] === ns;
             }).map(function (k) {
@@ -703,19 +703,19 @@ function TTMLParser() {
     }
 
     function removeNamespacePrefix(json, nsPrefix) {
-        for (var key in json) {
+        for (let key in json) {
             if (json.hasOwnProperty(key)) {
                 if ((typeof json[key] === 'object' || json[key] instanceof Object) && !Array.isArray(json[key])) {
                     removeNamespacePrefix(json[key], nsPrefix);
                 } else if (Array.isArray(json[key])) {
-                    for (var i = 0; i < json[key].length; i++) {
+                    for (let i = 0; i < json[key].length; i++) {
                         removeNamespacePrefix(json[key][i], nsPrefix);
                     }
                 }
-                var fullNsPrefix = nsPrefix + ':';
-                var nsPrefixPos = key.indexOf(fullNsPrefix);
+                let fullNsPrefix = nsPrefix + ':';
+                let nsPrefixPos = key.indexOf(fullNsPrefix);
                 if (nsPrefixPos >= 0) {
-                    var newKey = key.slice(nsPrefixPos + fullNsPrefix.length);
+                    let newKey = key.slice(nsPrefixPos + fullNsPrefix.length);
                     json[newKey] = json[key];
                     delete json[key];
                 }
@@ -731,13 +731,13 @@ function TTMLParser() {
     // Convert an RGBA value written in Hex to rgba(v,v,v,a).
     function convertHexToRGBA(rgba) {
         // Get the hexadecimal value without the #.
-        var hex = rgba.slice(1);
+        let hex = rgba.slice(1);
         // Separate the values in pairs.
-        var hexMatrice = hex.match(/.{2}/g);
+        let hexMatrice = hex.match(/.{2}/g);
         // Convert the alpha value in decimal between 0 and 1.
-        var alpha = parseFloat(parseInt((parseInt(hexMatrice[3], 16) / 255) * 1000, 10) / 1000);
+        let alpha = parseFloat(parseInt((parseInt(hexMatrice[3], 16) / 255) * 1000, 10) / 1000);
         // Get the standard RGB value.
-        var rgb = hexMatrice.slice(0, 3).map(function (i) {
+        let rgb = hexMatrice.slice(0, 3).map(function (i) {
             return parseInt(i, 16);
         });
         // Return the RGBA value for CSS.
@@ -759,7 +759,7 @@ function TTMLParser() {
 
     // Return whether or not an array contains a certain text
     function arrayContains(text, array) {
-        for (var i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length; i++) {
             if (array[i].indexOf(text) > -1) {
                 return true;
             }
@@ -769,7 +769,7 @@ function TTMLParser() {
 
     // Return the whole value that contains "text"
     function getPropertyFromArray(text, array) {
-        for (var i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length; i++) {
             if (array[i].indexOf(text) > -1) {
                 return array[i];
             }
@@ -783,8 +783,8 @@ function TTMLParser() {
     }
 
     function mergeArrays(primeArray, arrayToAdd) {
-        for (var i = 0; i < primeArray.length; i++) {
-            for (var j = 0; j < arrayToAdd.length; j++) {
+        for (let i = 0; i < primeArray.length; i++) {
+            for (let j = 0; j < arrayToAdd.length; j++) {
                 // Take only the name of the property
                 if (primeArray[i]) {
                     if (primeArray[i].split(':')[0].indexOf(arrayToAdd[j].split(':')[0]) > -1) {
@@ -830,15 +830,15 @@ function TTMLParser() {
 
     // Compute the style properties to return an array with the cleaned properties.
     function processStyle(cueStyle, cellUnit, includeRegionStyles) {
-        var properties = [];
-        var valueFtSizeInPx,
+        let properties = [];
+        let valueFtSizeInPx,
             valueLHSizeInPx;
 
         // Clean up from the xml2json parsing:
-        for (var key in cueStyle) {
+        for (let key in cueStyle) {
             if (cueStyle.hasOwnProperty(key)) {
                 //Clean the properties from the parsing.
-                var newKey = key.replace('ebutts:', '');
+                let newKey = key.replace('ebutts:', '');
                 newKey = newKey.replace('xml:', '');
                 newKey = newKey.replace('tts:', '');
 
@@ -851,19 +851,19 @@ function TTMLParser() {
 
         // Line padding is computed from the cellResolution.
         if ('line-padding' in cueStyle) {
-            var valuePadding = parseFloat(cueStyle['line-padding'].slice(cueStyle['line-padding'].indexOf(':') + 1,
+            let valuePadding = parseFloat(cueStyle['line-padding'].slice(cueStyle['line-padding'].indexOf(':') + 1,
                 cueStyle['line-padding'].indexOf('c')));
             if ('id' in cueStyle) {
                 linePadding[cueStyle.id] = valuePadding;
             }
-            var valuePaddingInPx = valuePadding * cellUnit[0] + 'px;';
+            let valuePaddingInPx = valuePadding * cellUnit[0] + 'px;';
             properties.push('padding-left:' + valuePaddingInPx);
             properties.push('padding-right:' + valuePaddingInPx);
         }
         // Font size is computed from the cellResolution.
         if ('font-size' in cueStyle) {
-            var fontSizeTab = getSizeTypeAndDefinition(cueStyle['font-size']);
-            var valueFtSize = parseFloat(fontSizeTab[1]);
+            let fontSizeTab = getSizeTypeAndDefinition(cueStyle['font-size']);
+            let valueFtSize = parseFloat(fontSizeTab[1]);
             if ('id' in cueStyle) {
                 fontSize[cueStyle.id] = fontSizeTab;
             }
@@ -881,8 +881,8 @@ function TTMLParser() {
             if (cueStyle['line-height'] === 'normal') {
                 properties.push('line-height: normal;');
             } else {
-                var LineHeightTab = getSizeTypeAndDefinition(cueStyle['line-height']);
-                var valueLHSize = parseFloat(LineHeightTab[1]);
+                let LineHeightTab = getSizeTypeAndDefinition(cueStyle['line-height']);
+                let valueLHSize = parseFloat(LineHeightTab[1]);
                 if ('id' in cueStyle) {
                     lineHeight[cueStyle.id] = LineHeightTab;
                 }
@@ -924,7 +924,7 @@ function TTMLParser() {
             }
         }
         // Background color can be specified from hexadecimal (RGB or RGBA) value.
-        var rgbaValue;
+        let rgbaValue;
         if ('background-color' in cueStyle) {
             if (cueStyle['background-color'].indexOf('#') > -1 && (cueStyle['background-color'].length - 1) === 8) {
                 rgbaValue = convertHexToRGBA(cueStyle['background-color']);
@@ -996,8 +996,8 @@ function TTMLParser() {
     // Return null if no style is found
     function findStyleFromID(ttmlStyling, cueStyleID) {
         // For every styles available, search the corresponding style in ttmlStyling.
-        for (var j = 0; j < ttmlStyling.length; j++) {
-            var currStyle = ttmlStyling[j];
+        for (let j = 0; j < ttmlStyling.length; j++) {
+            let currStyle = ttmlStyling[j];
             if (currStyle['xml:id'] === cueStyleID || currStyle.id === cueStyleID) {
                 // Return the style corresponding to the ID in parameter.
                 return currStyle;
@@ -1007,15 +1007,15 @@ function TTMLParser() {
     }
     // Return the computed style from a certain ID.
     function getProcessedStyle(reference, cellUnit, includeRegionStyles) {
-        var styles = [];
-        var ids = reference.match(/\S+/g);
+        let styles = [];
+        let ids = reference.match(/\S+/g);
         ids.forEach(function (id) {
             // Find the style for each id received.
-            var cueStyle = findStyleFromID(ttmlStyling, id);
+            let cueStyle = findStyleFromID(ttmlStyling, id);
             if (cueStyle) {
                 // Process the style for the cue in CSS form.
                 // Send a copy of the style object, so it does not modify the original by cleaning it.
-                var stylesFromId = processStyle(JSON.parse(JSON.stringify(cueStyle)), cellUnit, includeRegionStyles);
+                let stylesFromId = processStyle(JSON.parse(JSON.stringify(cueStyle)), cellUnit, includeRegionStyles);
                 styles = styles.concat(stylesFromId);
             }
         });
@@ -1076,12 +1076,12 @@ function TTMLParser() {
 
     // Compute the region properties to return an array with the cleaned properties.
     function processRegion(cueRegion, cellUnit) {
-        var properties = [];
+        let properties = [];
 
         // Clean up from the xml2json parsing:
-        for (var key in cueRegion) {
+        for (let key in cueRegion) {
             //Clean the properties from the parsing.
-            var newKey = key.replace('tts:', '');
+            let newKey = key.replace('tts:', '');
             newKey = newKey.replace('xml:', '');
 
             // Clean the properties' names.
@@ -1093,13 +1093,13 @@ function TTMLParser() {
         }
         // Extent property corresponds to width and height
         if ('extent' in cueRegion) {
-            var coordsExtent = cueRegion.extent.split(/\s/);
+            let coordsExtent = cueRegion.extent.split(/\s/);
             properties.push('width: ' + coordsExtent[0] + ';');
             properties.push('height: ' + coordsExtent[1] + ';');
         }
         // Origin property corresponds to top and left
         if ('origin' in cueRegion) {
-            var coordsOrigin = cueRegion.origin.split(/\s/);
+            let coordsOrigin = cueRegion.origin.split(/\s/);
             properties.push('left: ' + coordsOrigin[0] + ';');
             properties.push('top: ' + coordsOrigin[1] + ';');
         }
@@ -1113,7 +1113,7 @@ function TTMLParser() {
         }
         // Style will give to the region the style properties from the style selected
         if ('style' in cueRegion) {
-            var styleFromID = getProcessedStyle(cueRegion.style, cellUnit, true);
+            let styleFromID = getProcessedStyle(cueRegion.style, cellUnit, true);
             properties = properties.concat(styleFromID);
         }
 
@@ -1139,8 +1139,8 @@ function TTMLParser() {
     // Return null if no region is found
     function findRegionFromID(ttmlLayout, cueRegionID) {
         // For every region available, search the corresponding style in ttmlLayout.
-        for (var j = 0; j < ttmlLayout.length; j++) {
-            var currReg = ttmlLayout[j];
+        for (let j = 0; j < ttmlLayout.length; j++) {
+            let currReg = ttmlLayout[j];
             if (currReg['xml:id'] === cueRegionID || currReg.id === cueRegionID) {
                 // Return the region corresponding to the ID in parameter.
                 return currReg;
@@ -1151,15 +1151,15 @@ function TTMLParser() {
 
     // Return the computed region from a certain ID.
     function getProcessedRegion(reference, cellUnit) {
-        var regions = [];
-        var ids = reference.match(/\S+/g);
+        let regions = [];
+        let ids = reference.match(/\S+/g);
         ids.forEach(function (id) {
             // Find the region for each id received.
-            var cueRegion = findRegionFromID(ttmlLayout, id);
+            let cueRegion = findRegionFromID(ttmlLayout, id);
             if (cueRegion) {
                 // Process the region for the cue in CSS form.
                 // Send a copy of the style object, so it does not modify the original by cleaning it.
-                var regionsFromId = processRegion(JSON.parse(JSON.stringify(cueRegion)), cellUnit);
+                let regionsFromId = processRegion(JSON.parse(JSON.stringify(cueRegion)), cellUnit);
                 regions = regions.concat(regionsFromId);
             }
         });
@@ -1168,7 +1168,7 @@ function TTMLParser() {
 
     //Return the cellResolution defined by the TTML document.
     function getCellResolution() {
-        var defaultCellResolution = [32, 15]; // Default cellResolution.
+        let defaultCellResolution = [32, 15]; // Default cellResolution.
         if (ttml.tt.hasOwnProperty('ttp:cellResolution')) {
             return ttml.tt['ttp:cellResolution'].split(' ').map(parseFloat);
         } else {
@@ -1179,23 +1179,23 @@ function TTMLParser() {
     // Return the cue wrapped into a span specifying its linePadding.
     function applyLinePadding(cueHTML, cueStyle) {
         // Extract the linePadding property from cueStyleProperties.
-        var linePaddingLeft = getPropertyFromArray('padding-left', cueStyle);
-        var linePaddingRight = getPropertyFromArray('padding-right', cueStyle);
-        var linePadding = linePaddingLeft.concat(' ' + linePaddingRight + ' ');
+        let linePaddingLeft = getPropertyFromArray('padding-left', cueStyle);
+        let linePaddingRight = getPropertyFromArray('padding-right', cueStyle);
+        let linePadding = linePaddingLeft.concat(' ' + linePaddingRight + ' ');
 
         // Declaration of the HTML elements to be used in the cue innerHTML construction.
-        var outerHTMLBeforeBr = '';
-        var outerHTMLAfterBr = '';
-        var cueInnerHTML = '';
+        let outerHTMLBeforeBr = '';
+        let outerHTMLAfterBr = '';
+        let cueInnerHTML = '';
 
         // List all the nodes of the subtitle.
-        var nodeList = Array.prototype.slice.call(cueHTML.children);
+        let nodeList = Array.prototype.slice.call(cueHTML.children);
         // Take a br element as reference.
-        var brElement = cueHTML.getElementsByClassName('lineBreak')[0];
+        let brElement = cueHTML.getElementsByClassName('lineBreak')[0];
         // First index of the first br element.
-        var idx = nodeList.indexOf(brElement);
+        let idx = nodeList.indexOf(brElement);
         // array of all the br element indices
-        var indices = [];
+        let indices = [];
         // Find all the indices of the br elements.
         while (idx != -1) {
             indices.push(idx);
@@ -1203,9 +1203,9 @@ function TTMLParser() {
         }
 
         // Strings for the cue innerHTML construction.
-        var spanStringEnd = '<\/span>';
-        var br = '<br>';
-        var clonePropertyString = '<span' + ' class="spanPadding" ' + 'style="-webkit-box-decoration-break: clone; box-decoration-break: clone; ';
+        const spanStringEnd = '<\/span>';
+        const br = '<br>';
+        const clonePropertyString = '<span' + ' class="spanPadding" ' + 'style="-webkit-box-decoration-break: clone; box-decoration-break: clone; ';
 
         // If br elements are found:
         if (indices.length) {
@@ -1213,9 +1213,9 @@ function TTMLParser() {
             indices.forEach(function (i, index) {
                 // If this is the first line break, we compute the HTML of the element coming before.
                 if (index === 0) {
-                    var styleBefore = '';
+                    let styleBefore = '';
                     // for each element coming before the line break, we add its HTML.
-                    for (var j = 0; j < i; j++) {
+                    for (let j = 0; j < i; j++) {
                         outerHTMLBeforeBr += nodeList[j].outerHTML;
                         // If this is the first element, we add its style to the wrapper.
                         if (j === 0) {
@@ -1227,9 +1227,9 @@ function TTMLParser() {
                     outerHTMLBeforeBr = clonePropertyString + styleBefore + '">' + outerHTMLBeforeBr;
                 }
                 // For every element of the list, we compute the element coming after the line break.s
-                var styleAfter = '';
+                let styleAfter = '';
                 // for each element coming after the line break, we add its HTML.
-                for (var k = i + 1; k < nodeList.length; k++) {
+                for (let k = i + 1; k < nodeList.length; k++) {
                     outerHTMLAfterBr += nodeList[k].outerHTML;
                     // If this is the last element, we add its style to the wrapper.
                     if (k === nodeList.length - 1) {
@@ -1257,8 +1257,8 @@ function TTMLParser() {
             });
         } else {
             // If there is no line break in the subtitle, we simply wrap cue in a span indicating the linePadding.
-            var style = '';
-            for (var k = 0; k < nodeList.length; k++) {
+            let style = '';
+            for (let k = 0; k < nodeList.length; k++) {
                 style += nodeList[k].style.cssText;
             }
             cueInnerHTML = clonePropertyString + linePadding + style + '">' + cueHTML.innerHTML + spanStringEnd;
@@ -1275,7 +1275,7 @@ function TTMLParser() {
      */
 
     function constructCue(cueElements, cellUnit) {
-        var cue = document.createElement('div');
+        let cue = document.createElement('div');
         cueElements.forEach(function (el) {
             // If metadata is present, do not process.
             if (el.hasOwnProperty('metadata')) {
@@ -1288,13 +1288,13 @@ function TTMLParser() {
             if (el.hasOwnProperty('span')) {
 
                 // Stock the span subtitles in an array (in case there are only one value).
-                var spanElements = el.span.__children;
+                let spanElements = el.span.__children;
 
                 // Create the span element.
-                var spanHTMLElement = document.createElement('span');
+                let spanHTMLElement = document.createElement('span');
                 // Extract the style of the span.
                 if (el.span.hasOwnProperty('style')) {
-                    var spanStyle = getProcessedStyle(el.span.style, cellUnit);
+                    let spanStyle = getProcessedStyle(el.span.style, cellUnit);
                     spanHTMLElement.className = 'spanPadding ' + el.span.style;
                     spanHTMLElement.style.cssText = spanStyle.join(' ');
                 }
@@ -1308,7 +1308,7 @@ function TTMLParser() {
                     }
                     // If the element is a string
                     if (spanEl.hasOwnProperty('#text')) {
-                        var textNode = document.createTextNode(spanEl['#text']);
+                        let textNode = document.createTextNode(spanEl['#text']);
                         spanHTMLElement.appendChild(textNode);
                         // If the element is a 'br' tag
                     } else if ('br' in spanEl) {
@@ -1323,12 +1323,12 @@ function TTMLParser() {
                         }
 
                         // Create a br and add that to the cue
-                        var brEl = document.createElement('br');
+                        let brEl = document.createElement('br');
                         brEl.className = 'lineBreak';
                         cue.appendChild(brEl);
 
                         // Create an replacement span and copy the style and classname from the old one
-                        var newSpanHTMLElement = document.createElement('span');
+                        let newSpanHTMLElement = document.createElement('span');
                         newSpanHTMLElement.className = spanHTMLElement.className;
                         newSpanHTMLElement.style.cssText = spanHTMLElement.style.cssText;
 
@@ -1345,7 +1345,7 @@ function TTMLParser() {
              */
             else if (el.hasOwnProperty('br')) {
                 // We append the line break to the cue container.
-                var brEl = document.createElement('br');
+                let brEl = document.createElement('br');
                 brEl.className = 'lineBreak';
                 cue.appendChild(brEl);
             }
@@ -1355,7 +1355,7 @@ function TTMLParser() {
              */
             else if (el.hasOwnProperty('#text')) {
                 // Add the text to an individual span element (to add line padding if it is defined).
-                var textNode = document.createElement('span');
+                let textNode = document.createElement('span');
                 textNode.textContent = el['#text'];
 
                 // We append the element to the cue container.
@@ -1366,14 +1366,14 @@ function TTMLParser() {
     }
 
     function constructCueRegion(cue, div, cellUnit) {
-        var cueRegionProperties = []; // properties to be put in the "captionRegion" HTML element
+        let cueRegionProperties = []; // properties to be put in the "captionRegion" HTML element
         // Obtain the region ID(s) assigned to the cue.
-        var pRegionID = cue.region;
+        let pRegionID = cue.region;
         // If div has a region.
-        var divRegionID = div.region;
+        let divRegionID = div.region;
 
-        var divRegion;
-        var pRegion;
+        let divRegion,
+            pRegion;
 
         // If the div element reference a region.
         if (divRegionID) {
@@ -1398,18 +1398,18 @@ function TTMLParser() {
     }
 
     function constructCueStyle(cue, cellUnit) {
-        var cueStyleProperties = []; // properties to be put in the "paragraph" HTML element
+        let cueStyleProperties = []; // properties to be put in the "paragraph" HTML element
         // Obtain the style ID(s) assigned to the cue.
-        var pStyleID = cue.style;
+        let pStyleID = cue.style;
         // If body has a style.
-        var bodyStyleID = ttml.tt.body.style;
+        let bodyStyleID = ttml.tt.body.style;
         // If div has a style.
-        var divStyleID = ttml.tt.body.div.style;
+        let divStyleID = ttml.tt.body.div.style;
 
-        var bodyStyle;
-        var divStyle;
-        var pStyle;
-        var styleIDs = '';
+        let bodyStyle,
+            divStyle,
+            pStyle;
+        let styleIDs = '';
 
         // If the body element reference a style.
         if (bodyStyleID) {
@@ -1458,7 +1458,7 @@ function TTMLParser() {
     }
 
     function applyDefaultProperties(array, defaultProperties) {
-        for (var key in defaultProperties) {
+        for (let key in defaultProperties) {
             if (defaultProperties.hasOwnProperty(key)) {
                 if (!arrayContains(key, array)) {
                     array.push(key + ':' + defaultProperties[key]);

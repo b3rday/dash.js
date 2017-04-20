@@ -350,7 +350,7 @@ function MediaPlayer() {
      * @instance
      */
     function getDVRWindowSize() {
-        var metric = getDVRInfoMetric();
+        let metric = getDVRInfoMetric();
         if (!metric) {
             return 0;
         }
@@ -369,13 +369,13 @@ function MediaPlayer() {
      * @instance
      */
     function getDVRSeekOffset(value) {
-        var metric = getDVRInfoMetric();
+        let metric = getDVRInfoMetric();
 
         if (!metric) {
             return 0;
         }
 
-        var val = metric.range.start + value;
+        let val = metric.range.start + value;
 
         if (val > metric.range.end) {
             val = metric.range.end;
@@ -397,7 +397,7 @@ function MediaPlayer() {
         if (!playbackInitialized) {
             throw PLAYBACK_NOT_INITIALIZED_ERROR;
         }
-        var s = playbackController.getIsDynamic() ? getDVRSeekOffset(value) : value;
+        let s = playbackController.getIsDynamic() ? getDVRSeekOffset(value) : value;
         playbackController.seek(s);
     }
 
@@ -417,13 +417,13 @@ function MediaPlayer() {
         if (!playbackInitialized) {
             throw PLAYBACK_NOT_INITIALIZED_ERROR;
         }
-        var t = getVideoElement().currentTime;
+        let t = getVideoElement().currentTime;
 
         if (streamId !== undefined) {
             t = streamController.getTimeRelativeToStreamId(t, streamId);
 
         } else if (playbackController.getIsDynamic()) {
-            var metric = getDVRInfoMetric();
+            let metric = getDVRInfoMetric();
             t = (metric === null) ? 0 : duration() - (metric.range.end - metric.time);
         }
 
@@ -441,12 +441,12 @@ function MediaPlayer() {
         if (!playbackInitialized) {
             throw PLAYBACK_NOT_INITIALIZED_ERROR;
         }
-        var d = getVideoElement().duration;
+        let d = getVideoElement().duration;
 
         if (playbackController.getIsDynamic()) {
 
-            var metric = getDVRInfoMetric();
-            var range;
+            let metric = getDVRInfoMetric();
+            let range;
 
             if (!metric) {
                 return 0;
@@ -522,9 +522,9 @@ function MediaPlayer() {
     function convertToTimeCode(value) {
         value = Math.max(value, 0);
 
-        var h = Math.floor(value / 3600);
-        var m = Math.floor((value % 3600) / 60);
-        var s = Math.floor((value % 3600) % 60);
+        let h = Math.floor(value / 3600);
+        let m = Math.floor((value % 3600) / 60);
+        let s = Math.floor((value % 3600) % 60);
         return (h === 0 ? '' : (h < 10 ? '0' + h.toString() + ':' : h.toString() + ':')) + (m < 10 ? '0' + m.toString() : m.toString()) + ':' + (s < 10 ? '0' + s.toString() : s.toString());
     }
 
@@ -978,12 +978,12 @@ function MediaPlayer() {
             textController = TextController(context).getInstance();
         }
 
-        var tracks = getVideoElement().textTracks;
-        var ln = tracks.length;
+        let tracks = getVideoElement().textTracks;
+        const ln = tracks.length;
 
-        for (var i = 0; i < ln; i++) {
-            var track = tracks[i];
-            var mode = idx === i ? 'showing' : 'hidden';
+        for (let i = 0; i < ln; i++) {
+            let track = tracks[i];
+            let mode = idx === i ? 'showing' : 'hidden';
 
             if (track.mode !== mode) { //checking that mode is not already set by 3rd Party player frameworks that set mode to prevent event retrigger.
                 track.mode = mode;
@@ -1011,7 +1011,7 @@ function MediaPlayer() {
         if (!playbackInitialized) {
             throw PLAYBACK_NOT_INITIALIZED_ERROR;
         }
-        var stream = getActiveStream();
+        let stream = getActiveStream();
         return stream ? stream.getBitrateListFor(type) : [];
     }
 
@@ -1119,7 +1119,7 @@ function MediaPlayer() {
         if (!playbackInitialized) {
             throw PLAYBACK_NOT_INITIALIZED_ERROR;
         }
-        var streamInfo = streamController.getActiveStreamInfo();
+        let streamInfo = streamController.getActiveStreamInfo();
 
         if (!streamInfo) return null;
 
@@ -1348,10 +1348,10 @@ function MediaPlayer() {
      * @instance
      */
     function retrieveManifest(url, callback) {
-        var manifestLoader = createManifestLoader();
-        var self = this;
+        let manifestLoader = createManifestLoader();
+        let self = this;
 
-        var handler = function (e) {
+        const handler = function (e) {
             if (!e.error) {
                 callback(e.manifest);
             } else {
@@ -1398,8 +1398,8 @@ function MediaPlayer() {
      * @instance
      */
     function addUTCTimingSource(schemeIdUri, value) {
-        removeUTCTimingSource(schemeIdUri, value); //check if it already exists and remove if so.
-        var vo = new UTCTiming();
+        removeUTCTimingSource(schemeIdUri, value);//check if it already exists and remove if so.
+        let vo = new UTCTiming();
         vo.schemeIdUri = schemeIdUri;
         vo.value = value;
         mediaPlayerModel.getUTCTimingSources().push(vo);
@@ -1841,7 +1841,7 @@ function MediaPlayer() {
         }
 
         if (typeof urlOrManifest === 'string') {
-            var uriQueryFragModel = URIQueryAndFragmentModel(context).getInstance();
+            let uriQueryFragModel = URIQueryAndFragmentModel(context).getInstance();
             uriQueryFragModel.initialize();
             source = uriQueryFragModel.parseURI(urlOrManifest);
         } else {
@@ -2020,13 +2020,13 @@ function MediaPlayer() {
     }
 
     function getDVRInfoMetric() {
-        var metric = metricsModel.getReadOnlyMetricsFor('video') || metricsModel.getReadOnlyMetricsFor('audio');
+        let metric = metricsModel.getReadOnlyMetricsFor('video') || metricsModel.getReadOnlyMetricsFor('audio');
         return dashMetrics.getCurrentDVRInfo(metric);
     }
 
     function getAsUTC(valToConvert) {
-        var metric = getDVRInfoMetric();
-        var availableFrom,
+        let metric = getDVRInfoMetric();
+        let availableFrom,
             utcValue;
 
         if (!metric) {
@@ -2041,7 +2041,7 @@ function MediaPlayer() {
         if (!playbackInitialized) {
             throw PLAYBACK_NOT_INITIALIZED_ERROR;
         }
-        var streamInfo = streamController.getActiveStreamInfo();
+        let streamInfo = streamController.getActiveStreamInfo();
         return streamInfo ? streamController.getStreamById(streamInfo.id) : null;
     }
 

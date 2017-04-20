@@ -251,7 +251,7 @@ function StreamProcessor(config) {
     }
 
     function createBufferControllerForType(type) {
-        var controller = null;
+        let controller = null;
 
         if (type === 'video' || type === 'audio') {
             controller = BufferController(context).create({
