@@ -88,8 +88,8 @@ function Debug() {
      */
     function log() {
 
-        var message = '';
-        var logTime = null;
+        let message = '';
+        let logTime = null;
 
         if (showLogTimestamp) {
             logTime = new Date().getTime();
