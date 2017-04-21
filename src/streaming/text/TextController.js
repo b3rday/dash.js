@@ -117,21 +117,21 @@ function TextController() {
 
     function setTextTrack() {
 
-        var config = textSourceBuffer.getConfig();
-        var fragmentModel = config.fragmentModel;
-        var embeddedTracks = config.embeddedTracks;
-        var isFragmented = config.isFragmented;
-        var fragmentedTracks = config.fragmentedTracks;
-        var allTracksAreDisabled = config.allTracksAreDisabled;
+        let config = textSourceBuffer.getConfig();
+        let fragmentModel = config.fragmentModel;
+        let embeddedTracks = config.embeddedTracks;
+        let isFragmented = config.isFragmented;
+        let fragmentedTracks = config.fragmentedTracks;
+        let allTracksAreDisabled = config.allTracksAreDisabled;
 
-        var el = videoModel.getElement();
-        var tracks = el.textTracks;
-        var ln = tracks.length;
-        var nrNonEmbeddedTracks = ln - embeddedTracks.length;
-        var oldTrackIdx = textTracks.getCurrentTrackIdx();
+        let el = videoModel.getElement();
+        let tracks = el.textTracks;
+        const ln = tracks.length;
+        let nrNonEmbeddedTracks = ln - embeddedTracks.length;
+        let oldTrackIdx = textTracks.getCurrentTrackIdx();
 
-        for (var i = 0; i < ln; i++) {
-            var track = tracks[i];
+        for (let i = 0; i < ln; i++) {
+            let track = tracks[i];
             allTracksAreDisabled = track.mode !== 'showing';
             if (track.mode === 'showing') {
                 if (oldTrackIdx !== i) { // do not reset track if already the current track.  This happens when all captions get turned off via UI and then turned on again and with videojs.
@@ -140,8 +140,8 @@ function TextController() {
 
                     // specific to fragmented texe
                     if (isFragmented && i < nrNonEmbeddedTracks) {
-                        var currentFragTrack = mediaController.getCurrentTrackFor('fragmentedText', streamController.getActiveStreamInfo());
-                        var newFragTrack = fragmentedTracks[i];
+                        let currentFragTrack = mediaController.getCurrentTrackFor('fragmentedText', streamController.getActiveStreamInfo());
+                        let newFragTrack = fragmentedTracks[i];
                         if (newFragTrack !== currentFragTrack) {
                             fragmentModel.abortRequests();
                             textTracks.deleteTrackCues(currentFragTrack);
@@ -160,7 +160,7 @@ function TextController() {
     }
 
     function getCurrentTrackIdx() {
-        var textTracks = textSourceBuffer.getConfig().textTracks;
+        let textTracks = textSourceBuffer.getConfig().textTracks;
         return textTracks.getCurrentTrackIdx();
     }
 
