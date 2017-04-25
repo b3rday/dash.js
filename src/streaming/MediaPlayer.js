@@ -2011,8 +2011,7 @@ function MediaPlayer() {
         if (typeof MssHandler === 'function') { //TODO need a better way to register/detect plugin components
             mssHandler = MssHandler(context).create({
                 eventBus: eventBus,
-                mediaPlayerModel: mediaPlayerModel,
-                metricsModel: metricsModel
+                mediaPlayerModel: mediaPlayerModel
             });
             return mssHandler;
         }
