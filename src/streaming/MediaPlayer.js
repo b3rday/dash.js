@@ -37,7 +37,6 @@ import LiveEdgeFinder from './utils/LiveEdgeFinder';
 import ErrorHandler from './utils/ErrorHandler';
 import Capabilities from './utils/Capabilities';
 import TextTracks from './text/TextTracks';
-import SourceBufferController from './controllers/SourceBufferController';
 import RequestModifier from './utils/RequestModifier';
 import TextController from './text/TextController';
 import URIQueryAndFragmentModel from './models/URIQueryAndFragmentModel';
@@ -1891,7 +1890,6 @@ function MediaPlayer() {
 
         // creates or get objects instances
         let abrRulesCollection = ABRRulesCollection(context).getInstance();
-        let sourceBufferController = SourceBufferController(context).getInstance();
         let manifestLoader = createManifestLoader();
         let manifestModel = ManifestModel(context).getInstance();
         let liveEdgeFinder = LiveEdgeFinder(context).getInstance();
@@ -1907,10 +1905,6 @@ function MediaPlayer() {
         // configure controllers
         mediaController.setConfig({
             errHandler: errHandler
-        });
-
-        sourceBufferController.setConfig({
-            dashManifestModel: dashManifestModel
         });
 
         streamController.setConfig({

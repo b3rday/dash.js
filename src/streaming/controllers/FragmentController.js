@@ -59,17 +59,13 @@ function FragmentController( /*config*/ ) {
     function getModel(type) {
         let model = fragmentModels[type];
         if (!model) {
-            model = FragmentModel(context).create({
-                metricsModel: MetricsModel(context).getInstance()
+            model = FragmentModel(context).create({metricsModel: MetricsModel(context).getInstance(),
+                                                fragmentLoader: FragmentLoader(context).create({
+                                                metricsModel: MetricsModel(context).getInstance(),
+                                                errHandler: ErrorHandler(context).getInstance(),
+                                                requestModifier: RequestModifier(context).getInstance()})
             });
 
-            // create a fragment loader for this new model
-            let fragmentLoader = FragmentLoader(context).create({
-                metricsModel: MetricsModel(context).getInstance(),
-                errHandler: ErrorHandler(context).getInstance(),
-                requestModifier: RequestModifier(context).getInstance()
-            });
-            model.setLoader(fragmentLoader);
             fragmentModels[type] = model;
         }
 

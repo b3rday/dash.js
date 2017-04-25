@@ -119,6 +119,7 @@ function StreamProcessor(config) {
             representationController.reset();
             representationController = null;
         }
+
         stream = null;
         dynamic = null;
         mediaInfo = null;
@@ -200,14 +201,6 @@ function StreamProcessor(config) {
         return scheduleController;
     }
 
-    function start() {
-        scheduleController.start();
-    }
-
-    function stop() {
-        scheduleController.stop();
-    }
-
     function getCurrentRepresentationInfo() {
         return adapter.getCurrentRepresentationInfo(manifestModel.getValue(), representationController);
     }
@@ -217,7 +210,21 @@ function StreamProcessor(config) {
     }
 
     function isBufferingCompleted() {
-        return bufferController.getIsBufferingCompleted();
+        if (bufferController) {
+            return bufferController.getIsBufferingCompleted();
+        }
+
+        return false;
+    }
+
+    function getBufferLevel() {
+        return bufferController.getBufferLevel();
+    }
+
+    function switchInitData(representationId) {
+        if (bufferController) {
+            bufferController.switchInitData(getStreamInfo().id, representationId);
+        }
     }
 
     function createBuffer() {
@@ -276,6 +283,8 @@ function StreamProcessor(config) {
         getIndexHandler: getIndexHandler,
         getCurrentRepresentationInfo: getCurrentRepresentationInfo,
         getRepresentationInfoForQuality: getRepresentationInfoForQuality,
+        getBufferLevel: getBufferLevel,
+        switchInitData: switchInitData,
         isBufferingCompleted: isBufferingCompleted,
         createBuffer: createBuffer,
         getStreamInfo: getStreamInfo,
@@ -285,8 +294,6 @@ function StreamProcessor(config) {
         getMediaSource: getMediaSource,
         getBuffer: getBuffer,
         setBuffer: setBuffer,
-        start: start,
-        stop: stop,
         isDynamic: isDynamic,
         reset: reset
     };

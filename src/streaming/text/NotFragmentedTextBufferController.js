@@ -80,7 +80,7 @@ function NotFragmentedTextBufferController(config) {
 
             if (!initialized) {
                 if (buffer.hasOwnProperty('initialize')) {
-                    buffer.initialize(type, this);
+                    buffer.initialize(type, streamProcessor);
                 }
                 initialized = true;
             }

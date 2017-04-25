@@ -149,7 +149,7 @@ function ScheduleController(config) {
     }
 
     function start() {
-        if (!currentRepresentationInfo || streamProcessor.getBufferController().getIsBufferingCompleted()) {
+        if (!currentRepresentationInfo || streamProcessor.isBufferingCompleted()) {
             return;
         }
 
@@ -190,7 +190,6 @@ function ScheduleController(config) {
     }
 
     function schedule() {
-
         if (isStopped || isFragmentProcessingInProgress || !streamProcessor.getBufferController() || playbackController.isPaused() && !scheduleWhilePaused) {
             return;
         }
@@ -204,17 +203,17 @@ function ScheduleController(config) {
         ) {
 
             const getNextFragment = function () {
-                let bufferController = streamProcessor.getBufferController();
                 let fragmentController = streamProcessor.getFragmentController();
                 if (currentRepresentationInfo.quality !== lastInitQuality) {
                     lastInitQuality = currentRepresentationInfo.quality;
-                    bufferController.switchInitData(streamProcessor.getStreamInfo().id, currentRepresentationInfo.id);
+
+                    streamProcessor.switchInitData(currentRepresentationInfo.id);
                 } else {
                     const replacement = replaceRequestArray.shift();
 
                     if (fragmentController.isInitializationRequest(replacement)) {
                         //to be sure the specific init segment had not already been loaded.
-                        bufferController.switchInitData(replacement.mediaInfo.streamInfo.id, replacement.representationId);
+                        streamProcessor.switchInitData(replacement.representationId);
                     } else {
                         const request = nextFragmentRequestRule.execute(streamProcessor, replacement);
                         if (request) {
@@ -244,7 +243,6 @@ function ScheduleController(config) {
         //Validate that the fragment request executed and appended into the source buffer is as
         // good of quality as the current quality and is the correct media track.
         const safeBufferLevel = currentRepresentationInfo.fragmentDuration * 1.5;
-        let bufferController = streamProcessor.getBufferController();
 
         const request = fragmentModel.getRequests({
             state: FragmentModel.FRAGMENT_MODEL_EXECUTED,
@@ -254,12 +252,12 @@ function ScheduleController(config) {
 
         if (request && replaceRequestArray.indexOf(request) === -1 && !dashManifestModel.getIsTextTrack(type)) {
             if (!mediaController.isCurrentTrack(request.mediaInfo) || mediaPlayerModel.getFastSwitchEnabled() && request.quality < currentRepresentationInfo.quality &&
-                bufferController.getBufferLevel() >= safeBufferLevel && abrController.getAbandonmentStateFor(type) !== AbrController.ABANDON_LOAD) {
+                streamProcessor.getBufferLevel() >= safeBufferLevel && abrController.getAbandonmentStateFor(type) !== AbrController.ABANDON_LOAD) {
                 replaceRequest(request);
                 log('Reloading outdated fragment at index: ', request.index);
             } else if (request.quality > currentRepresentationInfo.quality) {
                 //The buffer has better quality it in then what we would request so set append point to end of buffer!!
-                setSeekTarget(playbackController.getTime() + bufferController.getBufferLevel());
+                setSeekTarget(playbackController.getTime() + streamProcessor.getBufferLevel());
             }
         }
     }
@@ -488,7 +486,8 @@ function ScheduleController(config) {
         }
 
         const manifestUpdateInfo = dashMetrics.getCurrentManifestUpdate(metricsModel.getMetricsFor('stream'));
-        const latency = currentRepresentationInfo.DVRWindow ? currentRepresentationInfo.DVRWindow.end - playbackController.getTime() : NaN;
+
+        const latency = currentRepresentationInfo.DVRWindow && playbackController ? currentRepresentationInfo.DVRWindow.end - playbackController.getTime() : NaN;
         metricsModel.updateManifestUpdateInfo(manifestUpdateInfo, {
             latency: latency
         });
